@@ -1,4 +1,4 @@
-package cz.cuni.mff.bc.common.main;
+package cz.cuni.mff.bc.api.main;
 
 import java.io.Serializable;
 import java.nio.file.Path;
