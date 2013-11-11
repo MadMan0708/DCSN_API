@@ -10,6 +10,7 @@ import cz.cuni.mff.bc.api.network.Downloader;
 import cz.cuni.mff.bc.api.network.IUpDown;
 import cz.cuni.mff.bc.api.network.Uploader;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -27,13 +28,15 @@ public class ClientAPI {
     private ExecutorService executor = Executors.newCachedThreadPool();
     private String clientName;
 
-    public ClientAPI(IServer remoteService) {
+    public ClientAPI(IServer remoteService, String clientName) {
         this.remoteService = remoteService;
+        this.clientName = clientName;
     }
 
-    public String getClientName(){
+    public String getClientName() {
         return clientName;
     }
+
     public boolean isProjectReadyForDownload(String projectName) throws RemoteException {
         if (remoteService.isProjectReadyForDownload(clientName, projectName)) {
             return true;
@@ -61,14 +64,19 @@ public class ClientAPI {
         }
     }
 
-    public ProgressChecker uploadProject(Path pathToProject, String projectName, int priority) throws RemoteException {
-        if (!isProjectExists(projectName)) {
-            File fileToUpload = pathToProject.toFile();
-            IUpDown uploader = new Uploader(remoteService, fileToUpload, clientName, projectName, priority);
-            Future<?> f = executor.submit(uploader);
-            return new ProgressChecker(f, uploader);
-        } else {
-            return null;
+    public ProgressChecker uploadProject(Path projectJar, Path projectData) throws RemoteException, IOException {
+        try {
+            String projectName = JarAPI.getAttributeFromManifest(projectJar, "Project-Name");
+            int priority = Integer.parseInt(JarAPI.getAttributeFromManifest(projectJar, "Project-Priority"));
+            if (!isProjectExists(projectName)) {
+                IUpDown uploader = new Uploader(remoteService, projectJar, projectData, clientName, projectName, priority);
+                Future<?> f = executor.submit(uploader);
+                return new ProgressChecker(f, uploader);
+            } else {
+                return null;
+            }
+        } catch (NumberFormatException e) {
+            throw new IOException("Incorrect values in jar manifest file:", e);
         }
     }
 

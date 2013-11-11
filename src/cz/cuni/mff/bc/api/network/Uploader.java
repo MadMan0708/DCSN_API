@@ -4,11 +4,14 @@
  */
 package cz.cuni.mff.bc.api.network;
 
+import cz.cuni.mff.bc.api.main.CustomIO;
 import cz.cuni.mff.bc.api.main.IServer;
+import cz.cuni.mff.bc.api.main.JarAPI;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import org.cojen.dirmi.Pipe;
 
 /**
@@ -18,45 +21,49 @@ import org.cojen.dirmi.Pipe;
 public class Uploader implements IUpDown {
 
     private IServer remoteService;
-    private File fileToUpload;
+    private Path projectJar;
+    private Path projectData;
     private int uploadProgress;
     private long bytesReaded;
-    private String projectID;
-    private String clientID;
+    private String clientName;
+    private String projectName;
     private int priority;
+    private File tmp;
 
-    public Uploader(IServer remoteService, File toUpload, String clientID, String projectID, int priority) {
+    public Uploader(IServer remoteService, Path projectJar, Path projectData,
+            String clientName, String projectName, int priority) {
         this.remoteService = remoteService;
-        this.fileToUpload = toUpload;
-        this.projectID = projectID;
-        this.clientID = clientID;
+        this.projectJar = projectJar;
+        this.projectData = projectData;
+        this.clientName = clientName;
+        this.projectName = projectName;
         this.priority = priority;
         this.uploadProgress = 0;
         this.bytesReaded = 0;
     }
 
+    private void prepareFileToUpload(File projectJar, File projectData, File dest) throws IOException {
+        CustomIO.zipFiles(tmp, new File[]{projectJar, projectData});
+    }
+
     @Override
     public Object call() throws Exception {
-        long size = fileToUpload.length();
-        // int uploadProgressTemp = -1;
-        int dotIndex = fileToUpload.getName().lastIndexOf(".") + 1;
-        try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(fileToUpload));
-                Pipe pipe = remoteService.uploadProject(clientID, projectID, priority, fileToUpload.getName().substring(dotIndex), null)) {
+        tmp = File.createTempFile(clientName, projectName + ".zip");
+        prepareFileToUpload(projectJar.toFile(), projectData.toFile(), tmp);
+        long size = tmp.length();
+        try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(tmp));
+                Pipe pipe = remoteService.uploadProject(clientName, projectName, priority, null)) {
             int n;
             byte[] buffer = new byte[8192];
             while ((n = in.read(buffer)) > 0) {
                 pipe.write(buffer, 0, n);
                 bytesReaded = bytesReaded + n;
                 uploadProgress = (int) Math.ceil(100 / (float) size * bytesReaded);
-                //   if (uploadProgress % 5 == 0 && uploadProgress != uploadProgressTemp) {
-                //       uploadProgressTemp = uploadProgress;
-                //       logger.log("Project: "+projectID+", Uploaded: " + uploadProgress + " %...");
-                //   }   
             }
             pipe.close();
             return null;
         } catch (IOException e) {
-            throw new IOException("Problem during accessing project file: " + projectID);
+            throw new IOException("Problem during accessing project file: " + projectName);
         }
     }
 
@@ -67,6 +74,11 @@ public class Uploader implements IUpDown {
 
     @Override
     public boolean isCompleted() {
-        return bytesReaded == fileToUpload.length();
+        if (!tmp.exists()) {
+            return false;
+        } else {
+            return bytesReaded == tmp.length();
+        }
+
     }
 }

@@ -21,19 +21,31 @@ import java.util.logging.Logger;
  * @author Jakub
  */
 public class ClientAPIWithLog {
-    
+
     private static final Logger LOG = Logger.getLogger(ClientAPIWithLog.class.getName());
     private ClientAPI clientAPI;
-    
-    public ClientAPIWithLog(IServer remoteService, Handler logHandler) {
-        this.clientAPI = new ClientAPI(remoteService);
+    private String clientName;
+    private Handler logHandler;
+
+    public ClientAPIWithLog(IServer remoteService, String clientName, Handler logHandler) {
+        this.clientAPI = new ClientAPI(remoteService, clientName);
+        this.logHandler = logHandler;
         LOG.addHandler(logHandler);
+        this.clientName = clientName;
     }
-    
+
     public ClientAPI getClientAPI() {
         return clientAPI;
     }
-    
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public Handler getLogHandler() {
+        return logHandler;
+    }
+
     public Boolean pauseProject(String projectName) {
         try {
             if (clientAPI.pauseProject(projectName)) {
@@ -48,7 +60,7 @@ public class ClientAPIWithLog {
             return null;
         }
     }
-    
+
     public Boolean unpauseProject(String projectName) {
         try {
             if (clientAPI.unpauseProject(projectName)) {
@@ -63,7 +75,7 @@ public class ClientAPIWithLog {
             return null;
         }
     }
-    
+
     public Boolean cancelProject(String projectName) {
         try {
             if (clientAPI.cancelProject(projectName)) {
@@ -78,7 +90,7 @@ public class ClientAPIWithLog {
             return null;
         }
     }
-    
+
     public Boolean isProjectReadyForDownload(String projectName) {
         try {
             if (clientAPI.isProjectReadyForDownload(projectName)) {
@@ -93,7 +105,7 @@ public class ClientAPIWithLog {
             return null;
         }
     }
-    
+
     public void download(String projectName, String downloadDir) {
         try {
             final String projectNameLocal = projectName;
@@ -129,19 +141,18 @@ public class ClientAPIWithLog {
             LOG.log(Level.WARNING, "Problem with network during downloading: {0}", e.getMessage());
         }
     }
-    
-    public void uploadProject(Path pathToProject, String projectName, int projectPriority) {
+
+    public void uploadProject(Path projectJar, Path projectData) {
         try {
-            final String projectNameLocal = projectName;
-            final ProgressChecker pc = clientAPI.uploadProject(pathToProject, projectName, projectPriority);
+            final String projectName = JarAPI.getAttributeFromManifest(projectJar, "Project-Name");
+            final ProgressChecker pc = clientAPI.uploadProject(projectJar, projectData);
             if (pc != null) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        LOG.log(Level.INFO, "Project: {0}, Uploaded: 0 %...", projectNameLocal);
+                        LOG.log(Level.INFO, "Project: {0}, Uploaded: 0 %...", projectName);
                         while (pc.isInProgress()) {
-                            LOG.log(Level.INFO, "Project: {0}, Uploaded: {1} %...", new Object[]{projectNameLocal, pc.getProgress()});
-                            LOG.log(Level.INFO, "Project: {0}, Uploaded: 100 %...", projectNameLocal);
+                            LOG.log(Level.INFO, "Project: {0}, Uploaded: {1} %...", new Object[]{projectName, pc.getProgress()});
                             try {
                                 Thread.sleep(800);
                             } catch (InterruptedException e) {
@@ -150,8 +161,8 @@ public class ClientAPIWithLog {
                         }
                         try {
                             pc.wasSuccesfull();
-                            LOG.log(Level.INFO, "Project: {0}, Uploaded: 100 %...", projectNameLocal);
-                            LOG.log(Level.INFO, "Project {0} has been uploaded", projectNameLocal);
+                            LOG.log(Level.INFO, "Project: {0}, Uploaded: 100 %...", projectName);
+                            LOG.log(Level.INFO, "Project {0} has been uploaded", projectName);
                         } catch (IOException e) {
                             LOG.log(Level.WARNING, "Problem with accessing file: {0}", e.getMessage());
                         }
@@ -162,9 +173,11 @@ public class ClientAPIWithLog {
             }
         } catch (RemoteException e) {
             LOG.log(Level.WARNING, "Problem with network during uploading: {0}", e.getMessage());
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Jar file couldn't be accessed: {0}", e.getMessage());
         }
     }
-    
+
     public void printAllProjects() {
         int i = 1;
         try {
@@ -177,7 +190,7 @@ public class ClientAPIWithLog {
             LOG.log(Level.WARNING, "Project list couldn''t be obtained due to network error: {0}", e.getMessage());
         }
     }
-    
+
     public void printProjects(ProjectState state) {
         int i = 1;
         try {
