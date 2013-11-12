@@ -106,10 +106,10 @@ public class ClientAPIWithLog {
         }
     }
 
-    public void download(String projectName, String downloadDir) {
+    public void download(String projectName, File destination) {
         try {
             final String projectNameLocal = projectName;
-            final ProgressChecker pc = clientAPI.downloadProject(projectName, Paths.get(downloadDir + File.separator + projectName + ".zip"));
+            final ProgressChecker pc = clientAPI.downloadProject(projectName, destination.toPath());
             if (pc != null) {
                 new Thread(new Runnable() {
                     @Override
@@ -144,6 +144,7 @@ public class ClientAPIWithLog {
 
     public void uploadProject(Path projectJar, Path projectData) {
         try {
+            LOG.info(projectJar.toString());
             final String projectName = JarAPI.getAttributeFromManifest(projectJar, "Project-Name");
             final ProgressChecker pc = clientAPI.uploadProject(projectJar, projectData);
             if (pc != null) {

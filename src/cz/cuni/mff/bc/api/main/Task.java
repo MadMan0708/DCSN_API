@@ -19,8 +19,8 @@ public class Task implements Serializable {
     private TaskState state = TaskState.BEFORE_START;
     private boolean dataHasBeenSaved = false;
 
-    public Task(String projectID, String clientID, String taskID, int priority, String className) {
-        this.unicateTaskID = new TaskID(projectID, clientID, taskID, priority, className);
+    public Task(String projectID, String clientID, String taskID, int priority) {
+        this.unicateTaskID = new TaskID(projectID, clientID, taskID, priority);
     }
 
     public void setClass(Class<?> className) throws IllegalAccessException, InstantiationException {

@@ -19,20 +19,15 @@ public class TaskID implements Serializable {
     private String taskID;
     private int priority;
 
-    public TaskID(String projectID, String clientID, String taskID, int priority, String className) {
+    public TaskID(String projectID, String clientID, String taskID, int priority) {
         this.projectID = projectID;
         this.clientID = clientID;
-        this.className = className;
         this.taskID = taskID;
         this.priority = priority;
     }
 
     public int getPriority() {
         return priority;
-    }
-
-    public String getClassName() {
-        return className;
     }
 
     public String getProjectID() {
