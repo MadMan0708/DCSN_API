@@ -9,7 +9,6 @@ import cz.cuni.mff.bc.api.network.ProgressChecker;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.logging.Handler;
@@ -26,12 +25,22 @@ public class ClientAPIWithLog {
     private ClientAPI clientAPI;
     private String clientName;
     private Handler logHandler;
+    private Path currentJar;
 
-    public ClientAPIWithLog(IServer remoteService, String clientName, Handler logHandler) {
-        this.clientAPI = new ClientAPI(remoteService, clientName);
+    
+    public ClientAPIWithLog(IServer remoteService, String clientName, Path currentJar, Handler logHandler) {
+        this.clientAPI = new ClientAPI(remoteService, clientName,currentJar);
         this.logHandler = logHandler;
         LOG.addHandler(logHandler);
         this.clientName = clientName;
+        this.currentJar = currentJar;
+    }
+    public ClientAPIWithLog(IServer remoteService, String clientName, Handler logHandler){
+        this(remoteService,clientName,null,logHandler);
+    }
+
+    public Path getCurrentJarPath() {
+        return currentJar;
     }
 
     public ClientAPI getClientAPI() {

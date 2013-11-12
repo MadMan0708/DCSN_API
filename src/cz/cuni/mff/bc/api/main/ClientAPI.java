@@ -26,14 +26,24 @@ public class ClientAPI {
     private IServer remoteService;
     private ExecutorService executor = Executors.newCachedThreadPool();
     private String clientName;
+    private Path currentJar;
 
-    public ClientAPI(IServer remoteService, String clientName) {
+    public ClientAPI(IServer remoteService, String clientName, Path currentJar) {
         this.remoteService = remoteService;
         this.clientName = clientName;
+        this.currentJar = currentJar;
+    }
+
+    public ClientAPI(IServer remoteService, String clientName) {
+        this(remoteService, clientName, null);
     }
 
     public String getClientName() {
         return clientName;
+    }
+
+    public Path getCurrentJarPath() {
+        return currentJar;
     }
 
     public boolean isProjectReadyForDownload(String projectName) throws RemoteException {
