@@ -21,20 +21,20 @@ import java.util.concurrent.Future;
  *
  * @author Jakub
  */
-public class ClientAPI {
+public class RemoteProvider {
 
     private IServer remoteService;
     private ExecutorService executor = Executors.newCachedThreadPool();
     private String clientName;
     private Path currentJar;
 
-    public ClientAPI(IServer remoteService, String clientName, Path currentJar) {
+    public RemoteProvider(IServer remoteService, String clientName, Path currentJar) {
         this.remoteService = remoteService;
         this.clientName = clientName;
         this.currentJar = currentJar;
     }
-
-    public ClientAPI(IServer remoteService, String clientName) {
+    
+    public RemoteProvider(IServer remoteService, String clientName) {
         this(remoteService, clientName, null);
     }
 
@@ -50,6 +50,14 @@ public class ClientAPI {
         if (remoteService.isProjectReadyForDownload(clientName, projectName)) {
             return true;
         } else {
+            return false;
+        }
+    }
+
+    public boolean isConnected() {
+        try {
+            return remoteService.isConnected(clientName);
+        } catch (RemoteException e) {
             return false;
         }
     }

@@ -19,32 +19,32 @@ import java.util.logging.Logger;
  *
  * @author Jakub
  */
-public class ClientAPIWithLog {
+public class StandartRemoteProvider {
 
-    private static final Logger LOG = Logger.getLogger(ClientAPIWithLog.class.getName());
-    private ClientAPI clientAPI;
+    private static final Logger LOG = Logger.getLogger(StandartRemoteProvider.class.getName());
+    private RemoteProvider remoteProvider;
     private String clientName;
     private Handler logHandler;
     private Path currentJar;
 
-    
-    public ClientAPIWithLog(IServer remoteService, String clientName, Path currentJar, Handler logHandler) {
-        this.clientAPI = new ClientAPI(remoteService, clientName,currentJar);
+    public StandartRemoteProvider(IServer remoteService, String clientName, Path currentJar, Handler logHandler) {
+        this.remoteProvider = new RemoteProvider(remoteService, clientName, currentJar);
         this.logHandler = logHandler;
         LOG.addHandler(logHandler);
         this.clientName = clientName;
         this.currentJar = currentJar;
     }
-    public ClientAPIWithLog(IServer remoteService, String clientName, Handler logHandler){
-        this(remoteService,clientName,null,logHandler);
+
+    public StandartRemoteProvider(IServer remoteService, String clientName, Handler logHandler) {
+        this(remoteService, clientName, null, logHandler);
     }
 
     public Path getCurrentJarPath() {
         return currentJar;
     }
 
-    public ClientAPI getClientAPI() {
-        return clientAPI;
+    public RemoteProvider getClientAPI() {
+        return remoteProvider;
     }
 
     public String getClientName() {
@@ -55,9 +55,13 @@ public class ClientAPIWithLog {
         return logHandler;
     }
 
+    public boolean isConnected() {
+        return remoteProvider.isConnected();
+    }
+
     public Boolean pauseProject(String projectName) {
         try {
-            if (clientAPI.pauseProject(projectName)) {
+            if (remoteProvider.pauseProject(projectName)) {
                 LOG.log(Level.INFO, "Project {0} was successfuly paused", projectName);
                 return true;
             } else {
@@ -72,7 +76,7 @@ public class ClientAPIWithLog {
 
     public Boolean unpauseProject(String projectName) {
         try {
-            if (clientAPI.unpauseProject(projectName)) {
+            if (remoteProvider.unpauseProject(projectName)) {
                 LOG.log(Level.INFO, "Project {0} was successfuly unpaused", projectName);
                 return true;
             } else {
@@ -87,7 +91,7 @@ public class ClientAPIWithLog {
 
     public Boolean cancelProject(String projectName) {
         try {
-            if (clientAPI.cancelProject(projectName)) {
+            if (remoteProvider.cancelProject(projectName)) {
                 LOG.log(Level.INFO, "Project {0} was successfuly canceled", projectName);
                 return false;
             } else {
@@ -102,7 +106,7 @@ public class ClientAPIWithLog {
 
     public Boolean isProjectReadyForDownload(String projectName) {
         try {
-            if (clientAPI.isProjectReadyForDownload(projectName)) {
+            if (remoteProvider.isProjectReadyForDownload(projectName)) {
                 LOG.log(Level.INFO, "Project {0} is ready for download", projectName);
                 return true;
             } else {
@@ -118,7 +122,7 @@ public class ClientAPIWithLog {
     public void download(String projectName, File destination) {
         try {
             final String projectNameLocal = projectName;
-            final ProgressChecker pc = clientAPI.downloadProject(projectName, destination.toPath());
+            final ProgressChecker pc = remoteProvider.downloadProject(projectName, destination.toPath());
             if (pc != null) {
                 new Thread(new Runnable() {
                     @Override
@@ -155,7 +159,7 @@ public class ClientAPIWithLog {
         try {
             LOG.info(projectJar.toString());
             final String projectName = JarAPI.getAttributeFromManifest(projectJar, "Project-Name");
-            final ProgressChecker pc = clientAPI.uploadProject(projectJar, projectData);
+            final ProgressChecker pc = remoteProvider.uploadProject(projectJar, projectData);
             if (pc != null) {
                 new Thread(new Runnable() {
                     @Override
@@ -191,23 +195,29 @@ public class ClientAPIWithLog {
     public void printAllProjects() {
         int i = 1;
         try {
-            ArrayList<ProjectInfo> pAll = clientAPI.getProjectList();
+            ArrayList<ProjectInfo> pAll = remoteProvider.getProjectList();
             for (ProjectInfo projectInfo : pAll) {
                 LOG.log(Level.INFO, "{0}: {1}", new Object[]{i, projectInfo.toString()});
                 i++;
             }
+            if (i == 1) {
+                LOG.log(Level.INFO, "No projects on server");
+            }
         } catch (RemoteException e) {
-            LOG.log(Level.WARNING, "Project list couldn''t be obtained due to network error: {0}", e.getMessage());
+            LOG.log(Level.WARNING, "Project list couldn't be obtained due to network error: {0}", e.getMessage());
         }
     }
 
     public void printProjects(ProjectState state) {
         int i = 1;
         try {
-            ArrayList<ProjectInfo> pAll = clientAPI.getProjectList(state);
+            ArrayList<ProjectInfo> pAll = remoteProvider.getProjectList(state);
             for (ProjectInfo projectInfo : pAll) {
                 LOG.log(Level.INFO, "{0}: {1}", new Object[]{i, projectInfo.toString()});
                 i++;
+            }
+            if (i == 1) {
+                LOG.log(Level.INFO, "No projects on server with state:{0}", state.toString());
             }
         } catch (RemoteException e) {
             LOG.log(Level.WARNING, "Project list couldn''t be obtained due to network error: {0}", e.getMessage());

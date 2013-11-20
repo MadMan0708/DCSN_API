@@ -17,7 +17,6 @@ import org.cojen.dirmi.Pipe;
 
 public interface IServer extends Remote {
 
-    //  public EUserAddingState addClient(String clientID) throws RemoteException;
     public Task getTask(String clientID, TaskID taskID) throws RemoteException;
 
     public void saveCompletedTask(String clientID, Task task) throws RemoteException;
@@ -29,8 +28,6 @@ public interface IServer extends Remote {
 
     @Asynchronous
     public Pipe downloadProjectJar(ProjectUID uid, Pipe pipe) throws RemoteException;
-
-   // public Class<?> getClassData(TaskID id) throws RemoteException;
 
     public boolean isProjectReadyForDownload(String clientID, String projectID) throws RemoteException;
 
@@ -52,7 +49,9 @@ public interface IServer extends Remote {
     public boolean cancelProject(String clientID, String projectID) throws RemoteException;
 
     public boolean unpauseProject(String clientID, String projectID) throws RemoteException;
-
+    
+    public boolean isConnected(String clientName) throws RemoteException;
+    
     public ArrayList<TaskID> calculatedTasks(String clientID, ArrayList<TaskID> tasks) throws RemoteException;
 
     public void cancelTaskFromClient(String clientID, TaskID taskToCancel) throws RemoteException;
