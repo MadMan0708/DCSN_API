@@ -23,6 +23,8 @@ public interface IServer extends Remote {
 
     public boolean isProjectExists(String clientID, String projectID) throws RemoteException;
 
+    public boolean hasClientTasksInProgress(String clientID) throws RemoteException;
+
     @Asynchronous
     public Pipe uploadProject(String clientName, String projectName, int priority, Pipe pipe) throws RemoteException;
 
@@ -48,10 +50,10 @@ public interface IServer extends Remote {
 
     public boolean cancelProject(String clientID, String projectID) throws RemoteException;
 
-    public boolean unpauseProject(String clientID, String projectID) throws RemoteException;
-    
+    public boolean resumeProject(String clientID, String projectID) throws RemoteException;
+
     public boolean isConnected(String clientName) throws RemoteException;
-    
+
     public ArrayList<TaskID> calculatedTasks(String clientID, ArrayList<TaskID> tasks) throws RemoteException;
 
     public void cancelTaskFromClient(String clientID, TaskID taskToCancel) throws RemoteException;

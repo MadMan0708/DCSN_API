@@ -16,49 +16,92 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Provides basic methods from server. These methods use default
+ * RemoteExceptions handling and default logging. If you need use these methods
+ * with own logging, use class RemoteProvider
  *
  * @author Jakub
  */
 public class StandartRemoteProvider {
-
+    
     private static final Logger LOG = Logger.getLogger(StandartRemoteProvider.class.getName());
     private RemoteProvider remoteProvider;
-    private String clientName;
     private Handler logHandler;
-    private Path currentJar;
 
+    /**
+     *
+     * @param remoteService remote interface
+     * @param clientName client name
+     * @param currentJar path to project jar
+     * @param logHandler logging handler
+     */
     public StandartRemoteProvider(IServer remoteService, String clientName, Path currentJar, Handler logHandler) {
         this.remoteProvider = new RemoteProvider(remoteService, clientName, currentJar);
         this.logHandler = logHandler;
         LOG.addHandler(logHandler);
-        this.clientName = clientName;
-        this.currentJar = currentJar;
     }
 
+    /**
+     *
+     * @param remoteService remote interface
+     * @param clientName client name
+     * @param logHandler logging handler
+     */
     public StandartRemoteProvider(IServer remoteService, String clientName, Handler logHandler) {
         this(remoteService, clientName, null, logHandler);
     }
 
+    /**
+     *
+     * @return path to project jar
+     */
     public Path getCurrentJarPath() {
-        return currentJar;
+        return remoteProvider.getCurrentJarPath();
     }
 
-    public RemoteProvider getClientAPI() {
+    /**
+     *
+     * @return basic remote provider
+     */
+    public RemoteProvider getRemoteProvider() {
         return remoteProvider;
     }
 
+    /**
+     *
+     * @return client name
+     */
     public String getClientName() {
-        return clientName;
+        return remoteProvider.getClientName();
     }
 
+    /**
+     * @return logging handler
+     */
     public Handler getLogHandler() {
         return logHandler;
     }
+    
+    public void removeLogHandler() {
+        LOG.removeHandler(logHandler);
+    }
 
+    /**
+     * Test if client is connected on the server
+     *
+     * @return true if client is connected, false otherwise
+     */
     public boolean isConnected() {
         return remoteProvider.isConnected();
     }
 
+    /**
+     * Tries to pause project
+     *
+     * @param projectName project name
+     * @return true if project has been paused, false if project doesn't exist
+     * or exception has been thrown
+     */
     public Boolean pauseProject(String projectName) {
         try {
             if (remoteProvider.pauseProject(projectName)) {
@@ -69,14 +112,21 @@ public class StandartRemoteProvider {
                 return false;
             }
         } catch (RemoteException e) {
-            LOG.log(Level.WARNING, "Prolem during pausing project due to network erorr: {0}", e.getMessage());
+            LOG.log(Level.WARNING, "Problem during pausing project due to network erorr: {0}", e.getMessage());
             return null;
         }
     }
 
-    public Boolean unpauseProject(String projectName) {
+    /**
+     * Tries to resume project
+     *
+     * @param projectName project name
+     * @return true if project has been resumed, false if project doesn't exist
+     * or exception has been thrown
+     */
+    public Boolean resumeProject(String projectName) {
         try {
-            if (remoteProvider.unpauseProject(projectName)) {
+            if (remoteProvider.resumeProject(projectName)) {
                 LOG.log(Level.INFO, "Project {0} was successfuly unpaused", projectName);
                 return true;
             } else {
@@ -84,11 +134,18 @@ public class StandartRemoteProvider {
                 return false;
             }
         } catch (RemoteException e) {
-            LOG.log(Level.WARNING, "Prolem during unpausing project due to network erorr: {0}", e.getMessage());
+            LOG.log(Level.WARNING, "Problem during unpausing project due to network erorr: {0}", e.getMessage());
             return null;
         }
     }
 
+    /**
+     * Tries to cancel project
+     *
+     * @param projectName project name
+     * @return true if project has been cancelled, false if project doesn't
+     * exist or exception has been thrown
+     */
     public Boolean cancelProject(String projectName) {
         try {
             if (remoteProvider.cancelProject(projectName)) {
@@ -104,6 +161,33 @@ public class StandartRemoteProvider {
         }
     }
 
+    /**
+     * Check if client has tasks in progress
+     *
+     * @return true if client has tasks in progress, false otherwise
+     */
+    public Boolean hasClientTasksInProgress() {
+        try {
+            if (!remoteProvider.hasClientTasksInProgress()) {
+                LOG.log(Level.INFO, "Client {0} has no tasks in progress", getClientName());
+                return false;
+            } else {
+                LOG.log(Level.INFO, "Client {0} has tasks in progress", getClientName());
+                return true;
+            }
+        } catch (RemoteException e) {
+            LOG.log(Level.INFO, "Problem during discovering tasks in progress", e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Tests if project is ready for download
+     *
+     * @param projectName project name
+     * @return true if project is ready for download, false if project is not
+     * ready for download or exception has been thrown
+     */
     public Boolean isProjectReadyForDownload(String projectName) {
         try {
             if (remoteProvider.isProjectReadyForDownload(projectName)) {
@@ -119,6 +203,12 @@ public class StandartRemoteProvider {
         }
     }
 
+    /**
+     * Downloads the projects with progress logging and exception handling
+     *
+     * @param projectName project name
+     * @param destination path to destination file
+     */
     public void download(String projectName, File destination) {
         try {
             final String projectNameLocal = projectName;
@@ -155,6 +245,13 @@ public class StandartRemoteProvider {
         }
     }
 
+    /**
+     *
+     * Uploads the projects with progress logging and exception handling
+     *
+     * @param projectJar path to project jar
+     * @param projectData path to project data
+     */
     public void uploadProject(Path projectJar, Path projectData) {
         try {
             LOG.info(projectJar.toString());
@@ -192,6 +289,34 @@ public class StandartRemoteProvider {
         }
     }
 
+    /**
+     * Prints information about project
+     *
+     * @param projectName project name
+     */
+    public void printProjectInfo(String projectName) {
+        try {
+            ArrayList<ProjectInfo> pAll = remoteProvider.getProjectList();
+            ProjectInfo particular = null;
+            for (ProjectInfo projectInfo : pAll) {
+                if (projectInfo.getProjectName().equals(projectName)) {
+                    particular = projectInfo;
+                    break;
+                }
+            }
+            if (particular != null) {
+                LOG.log(Level.INFO, "{0}", particular.toString());
+            } else {
+                LOG.log(Level.INFO, "No such project");
+            }
+        } catch (RemoteException e) {
+            LOG.log(Level.WARNING, "Not connected to server: {0}", e.getMessage());
+        }
+    }
+
+    /**
+     * Prints basic information about all client's projects
+     */
     public void printAllProjects() {
         int i = 1;
         try {
@@ -204,10 +329,15 @@ public class StandartRemoteProvider {
                 LOG.log(Level.INFO, "No projects on server");
             }
         } catch (RemoteException e) {
-            LOG.log(Level.WARNING, "Project list couldn't be obtained due to network error: {0}", e.getMessage());
+            LOG.log(Level.WARNING, "Not connected to server: {0}", e.getMessage());
         }
     }
 
+    /**
+     * Prints basic information about client's projects in given state
+     *
+     * @param state state used to filter projects
+     */
     public void printProjects(ProjectState state) {
         int i = 1;
         try {
@@ -217,10 +347,10 @@ public class StandartRemoteProvider {
                 i++;
             }
             if (i == 1) {
-                LOG.log(Level.INFO, "No projects on server with state:{0}", state.toString());
+                LOG.log(Level.INFO, "No projects on server with state: {0}", state.toString());
             }
         } catch (RemoteException e) {
-            LOG.log(Level.WARNING, "Project list couldn''t be obtained due to network error: {0}", e.getMessage());
+            LOG.log(Level.WARNING, "Not connected to server: {0}", e.getMessage());
         }
     }
 }
