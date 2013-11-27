@@ -23,32 +23,51 @@ import java.util.logging.Logger;
  * @author Jakub
  */
 public class StandartRemoteProvider {
-    
+
     private static final Logger LOG = Logger.getLogger(StandartRemoteProvider.class.getName());
     private RemoteProvider remoteProvider;
-    private Handler logHandler;
 
     /**
      *
      * @param remoteService remote interface
      * @param clientName client name
-     * @param currentJar path to project jar
+     * @param downloadDir download directory
+     * @param uploadDir upload directory
      * @param logHandler logging handler
+     * @param currentJar path to project jar
+     * @param logger logger
      */
-    public StandartRemoteProvider(IServer remoteService, String clientName, Path currentJar, Handler logHandler) {
-        this.remoteProvider = new RemoteProvider(remoteService, clientName, currentJar);
-        this.logHandler = logHandler;
-        LOG.addHandler(logHandler);
+    public StandartRemoteProvider(IServer remoteService, String clientName, Path downloadDir, Path uploadDir, Path currentJar, Logger logger) {
+        this.remoteProvider = new RemoteProvider(remoteService, clientName, downloadDir, uploadDir, currentJar);
+        LOG.setParent(logger);
     }
 
     /**
      *
      * @param remoteService remote interface
      * @param clientName client name
-     * @param logHandler logging handler
+     * @param downloadDir download directory
+     * @param uploadDir upload directory
+     * @param logger logger
      */
-    public StandartRemoteProvider(IServer remoteService, String clientName, Handler logHandler) {
-        this(remoteService, clientName, null, logHandler);
+    public StandartRemoteProvider(IServer remoteService, String clientName, Path downloadDir, Path uploadDir, Logger logger) {
+        this(remoteService, clientName, null, downloadDir, uploadDir, logger);
+    }
+
+    /**
+     *
+     * @return download directory which has been set in console
+     */
+    public Path getStandartDownloadDir() {
+        return remoteProvider.getStandartDownloadDir();
+    }
+
+    /**
+     *
+     * @return upload directory which has been set in console
+     */
+    public Path getStandartUploadDir() {
+        return remoteProvider.getStandartUploadDir();
     }
 
     /**
@@ -75,15 +94,8 @@ public class StandartRemoteProvider {
         return remoteProvider.getClientName();
     }
 
-    /**
-     * @return logging handler
-     */
-    public Handler getLogHandler() {
-        return logHandler;
-    }
-    
-    public void removeLogHandler() {
-        LOG.removeHandler(logHandler);
+    public Logger getLogger() {
+        return LOG;
     }
 
     /**

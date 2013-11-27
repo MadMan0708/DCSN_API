@@ -29,26 +29,34 @@ public class RemoteProvider {
     private ExecutorService executor = Executors.newCachedThreadPool();
     private String clientName;
     private Path currentJar;
+    private Path uploadDir;
+    private Path downloadDir;
 
     /**
      *
      * @param remoteService remote interface
      * @param clientName client name
+     * @param downloadDir download directory
+     * @param uploadDir upload directory
      * @param currentJar path to project jar
      */
-    public RemoteProvider(IServer remoteService, String clientName, Path currentJar) {
+    public RemoteProvider(IServer remoteService, String clientName, Path downloadDir, Path uploadDir, Path currentJar) {
         this.remoteService = remoteService;
         this.clientName = clientName;
         this.currentJar = currentJar;
+        this.uploadDir = uploadDir;
+        this.downloadDir = downloadDir;
     }
 
     /**
      *
      * @param remoteService remote interface
      * @param clientName client name
+     * @param downloadDir download directory
+     * @param uploadDir upload directory
      */
-    public RemoteProvider(IServer remoteService, String clientName) {
-        this(remoteService, clientName, null);
+    public RemoteProvider(IServer remoteService, String clientName, Path downloadDir, Path uploadDir) {
+        this(remoteService, clientName, downloadDir, uploadDir, null);
     }
 
     /**
@@ -57,6 +65,22 @@ public class RemoteProvider {
      */
     public String getClientName() {
         return clientName;
+    }
+
+    /**
+     *
+     * @return download directory which has been set in console
+     */
+    public Path getStandartDownloadDir() {
+        return downloadDir;
+    }
+
+    /**
+     *
+     * @return upload directory which has been set in console
+     */
+    public Path getStandartUploadDir() {
+        return uploadDir;
     }
 
     /**

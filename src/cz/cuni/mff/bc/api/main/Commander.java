@@ -10,6 +10,6 @@ package cz.cuni.mff.bc.api.main;
  */
 public abstract class Commander {
 
-    public abstract void start(StandartRemoteProvider clientAPI);
+    public abstract void start(StandartRemoteProvider standartRemoteProvider);
 
 }
