@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -184,7 +183,8 @@ public class StandartRemoteProvider {
                 LOG.log(Level.INFO, "Client {0} has no tasks in progress", getClientName());
                 return false;
             } else {
-                LOG.log(Level.INFO, "Client {0} has tasks in progress", getClientName());
+                LOG.log(Level.INFO, "Client {0} has tasks in progress: ", getClientName());
+                printAllProjects();
                 return true;
             }
         } catch (RemoteException e) {
@@ -266,7 +266,6 @@ public class StandartRemoteProvider {
      */
     public void uploadProject(Path projectJar, Path projectData) {
         try {
-            LOG.info(projectJar.toString());
             final String projectName = JarAPI.getAttributeFromManifest(projectJar, "Project-Name");
             final ProgressChecker pc = remoteProvider.uploadProject(projectJar, projectData);
             if (pc != null) {
@@ -297,7 +296,7 @@ public class StandartRemoteProvider {
         } catch (RemoteException e) {
             LOG.log(Level.WARNING, "Problem with network during uploading: {0}", e.getMessage());
         } catch (IOException e) {
-            LOG.log(Level.WARNING, "Jar file couldn't be accessed: {0}", e.getMessage());
+            LOG.log(Level.WARNING, "Jar file {0} couldn not be accessed", projectJar.getFileName());
         }
     }
 
