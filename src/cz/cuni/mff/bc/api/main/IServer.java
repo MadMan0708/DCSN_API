@@ -26,7 +26,7 @@ public interface IServer extends Remote {
     public boolean hasClientTasksInProgress(String clientID) throws RemoteException;
 
     @Asynchronous
-    public Pipe uploadProject(String clientName, String projectName, int priority, Pipe pipe) throws RemoteException;
+    public Pipe uploadProject(String clientName, String projectName, int priority, int cores, int memory, int time, Pipe pipe) throws RemoteException;
 
     @Asynchronous
     public Pipe downloadProjectJar(ProjectUID uid, Pipe pipe) throws RemoteException;

@@ -6,7 +6,6 @@ package cz.cuni.mff.bc.api.network;
 
 import cz.cuni.mff.bc.api.main.CustomIO;
 import cz.cuni.mff.bc.api.main.IServer;
-import cz.cuni.mff.bc.api.main.JarAPI;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,16 +27,22 @@ public class Uploader implements IUpDown {
     private String clientName;
     private String projectName;
     private int priority;
+    private int cores;
+    private int memory;
+    private int time;
     private File tmp;
 
     public Uploader(IServer remoteService, Path projectJar, Path projectData,
-            String clientName, String projectName, int priority) {
+            String clientName, String projectName, int priority, int cores, int memory, int time) {
         this.remoteService = remoteService;
         this.projectJar = projectJar;
         this.projectData = projectData;
         this.clientName = clientName;
         this.projectName = projectName;
         this.priority = priority;
+        this.cores = cores;
+        this.memory = memory;
+        this.time = time;
         this.uploadProgress = 0;
         this.bytesReaded = 0;
     }
@@ -52,7 +57,7 @@ public class Uploader implements IUpDown {
         prepareFileToUpload(projectJar.toFile(), projectData.toFile(), tmp);
         long size = tmp.length();
         try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(tmp));
-                Pipe pipe = remoteService.uploadProject(clientName, projectName, priority, null)) {
+                Pipe pipe = remoteService.uploadProject(clientName, projectName, priority, cores, memory, time, null)) {
             int n;
             byte[] buffer = new byte[8192];
             while ((n = in.read(buffer)) > 0) {

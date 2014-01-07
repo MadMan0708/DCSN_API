@@ -13,17 +13,46 @@ import java.util.Objects;
  */
 public class TaskID implements Serializable {
 
+    private int coreUsage;
+    private int memoryUsage;
+    private int runningTime;
+    private int priority;
     private String projectID;
     private String clientID;
-    private String className;
     private String taskID;
-    private int priority;
 
-    public TaskID(String projectID, String clientID, String taskID, int priority) {
+    public TaskID(String projectID, String clientID, String taskID, int priority, int cores, int memory, int runningTime) {
         this.projectID = projectID;
         this.clientID = clientID;
         this.taskID = taskID;
+        this.coreUsage = cores;
+        this.memoryUsage = memory;
+        this.runningTime = runningTime;
         this.priority = priority;
+    }
+
+    public int getCoreUsage() {
+        return coreUsage;
+    }
+
+    public void setCoreUsage(int coreUsage) {
+        this.coreUsage = coreUsage;
+    }
+
+    public int getMemoryUsage() {
+        return memoryUsage;
+    }
+
+    public void setMemoryUsage(int memoryUsage) {
+        this.memoryUsage = memoryUsage;
+    }
+
+    public int getRunningTime() {
+        return runningTime;
+    }
+
+    public void setRunningTime(int runningTime) {
+        this.runningTime = runningTime;
     }
 
     public int getPriority() {
