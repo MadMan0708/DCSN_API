@@ -17,6 +17,10 @@ import org.cojen.dirmi.Pipe;
 
 public interface IServer extends Remote {
 
+    public void setClientsMemoryLimit(String clientID, int memory) throws RemoteException;
+    
+    public void setClientsCoresLimit(String clientID, int cores) throws RemoteException;
+    
     public Task getTask(String clientID, TaskID taskID) throws RemoteException;
 
     public void saveCompletedTask(String clientID, Task task) throws RemoteException;

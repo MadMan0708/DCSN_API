@@ -92,6 +92,28 @@ public class RemoteProvider {
     }
 
     /**
+     * Sends server information about memory limit which can tasks use during
+     * computation
+     *
+     * @param memory
+     * @throws RemoteException
+     */
+    public void setMemoryLimit(int memory) throws RemoteException {
+        remoteService.setClientsMemoryLimit(clientName, memory);
+    }
+
+    /**
+     * Sends server information about number of cores which can be used to task
+     * computation
+     *
+     * @param cores
+     * @throws RemoteException
+     */
+    public void setCoresLimit(int cores) throws RemoteException {
+        remoteService.setClientsCoresLimit(clientName, cores);
+    }
+
+    /**
      *
      * @param projectName project name
      * @return true if project is ready for download, false otherwise

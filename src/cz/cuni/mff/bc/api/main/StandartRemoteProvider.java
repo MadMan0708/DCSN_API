@@ -107,6 +107,36 @@ public class StandartRemoteProvider {
     }
 
     /**
+     * Sends server information about memory limit which can tasks use during
+     * computation
+     *
+     * @param memory
+     */
+    public void setMemoryLimit(int memory) {
+        try {
+            remoteProvider.setMemoryLimit(memory);
+            LOG.log(Level.INFO, "Memory limit {0}m for tasks has been set on server", memory);
+        } catch (RemoteException e) {
+            LOG.log(Level.WARNING, "Memory limit couldn't be set due to connection problem");
+        }
+    }
+
+    /**
+     * Sends server information about number of cores which can be used to task
+     * computation
+     *
+     * @param cores
+     */
+    public void setCoresLimit(int cores) {
+        try {
+            remoteProvider.setCoresLimit(cores);
+            LOG.log(Level.INFO, "Cores limit {0} for tasks has been set on server", cores);
+        } catch (RemoteException e) {
+            LOG.log(Level.WARNING, "Cores limit couldn't be set due to connection problem");
+        }
+    }
+
+    /**
      * Tries to pause project
      *
      * @param projectName project name
