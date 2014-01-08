@@ -21,9 +21,9 @@ import java.util.logging.Logger;
  *
  * @author Jakub
  */
-public class StandartRemoteProvider {
+public class StandardRemoteProvider {
 
-    private static final Logger LOG = Logger.getLogger(StandartRemoteProvider.class.getName());
+    private static final Logger LOG = Logger.getLogger(StandardRemoteProvider.class.getName());
     private RemoteProvider remoteProvider;
 
     /**
@@ -36,7 +36,7 @@ public class StandartRemoteProvider {
      * @param currentJar path to project jar
      * @param logger logger
      */
-    public StandartRemoteProvider(IServer remoteService, String clientName, Path downloadDir, Path uploadDir, Path currentJar, Logger logger) {
+    public StandardRemoteProvider(IServer remoteService, String clientName, Path downloadDir, Path uploadDir, Path currentJar, Logger logger) {
         this.remoteProvider = new RemoteProvider(remoteService, clientName, downloadDir, uploadDir, currentJar);
         LOG.setParent(logger);
     }
@@ -49,7 +49,7 @@ public class StandartRemoteProvider {
      * @param uploadDir upload directory
      * @param logger logger
      */
-    public StandartRemoteProvider(IServer remoteService, String clientName, Path downloadDir, Path uploadDir, Logger logger) {
+    public StandardRemoteProvider(IServer remoteService, String clientName, Path downloadDir, Path uploadDir, Logger logger) {
         this(remoteService, clientName, null, downloadDir, uploadDir, logger);
     }
 
