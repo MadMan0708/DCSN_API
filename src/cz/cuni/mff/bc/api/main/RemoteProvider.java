@@ -219,8 +219,8 @@ public class RemoteProvider {
     /**
      *
      * @param projectName project name
-     * @return true if the project has been cancelled, false if the project doesn't
-     * exist
+     * @return true if the project has been cancelled, false if the project
+     * doesn't exist
      * @throws RemoteException
      */
     public boolean cancelProject(String projectName) throws RemoteException {
@@ -234,7 +234,8 @@ public class RemoteProvider {
     /**
      *
      * @param projectName project name
-     * @return true if the project has been paused, false if the project doesn't exist
+     * @return true if the project has been paused, false if the project doesn't
+     * exist
      * @throws RemoteException
      */
     public boolean pauseProject(String projectName) throws RemoteException {
@@ -248,7 +249,8 @@ public class RemoteProvider {
     /**
      *
      * @param projectName project name
-     * @return true if the project has been resumed, false if the project doesn't exist
+     * @return true if the project has been resumed, false if the project
+     * doesn't exist
      * @throws RemoteException
      */
     public boolean resumeProject(String projectName) throws RemoteException {
@@ -257,6 +259,17 @@ public class RemoteProvider {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Marks the project as corrupted
+     *
+     * @param ownerName name of the owner of the project
+     * @param projectName project name
+     * @throws RemoteException
+     */
+    public void markProjectAsCurrupted(String ownerName, String projectName) throws RemoteException {
+        remoteService.markProjectAsCorrupted(ownerName, projectName);
     }
 
     /**

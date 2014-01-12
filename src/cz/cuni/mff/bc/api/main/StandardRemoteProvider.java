@@ -184,6 +184,25 @@ public class StandardRemoteProvider {
     }
 
     /**
+     * Marks the project as corrupted
+     *
+     * @param ownerName name of the owner of the project
+     * @param projectName project name
+     * @throws RemoteException
+     * @return true if the project was successfully marked as corrupted
+     */
+    public Boolean markProjectAsCurrupted(String ownerName, String projectName) {
+        try {
+            remoteProvider.markProjectAsCurrupted(ownerName, projectName);
+            LOG.log(Level.INFO, "Project{0} by {1} is marked as corrupted now", new Object[]{projectName, ownerName});
+            return true;
+        } catch (RemoteException e) {
+            LOG.log(Level.WARNING, "Problem during marking project due to network erorr: {0}", e.getMessage());
+            return null;
+        }
+    }
+
+    /**
      * Tries to cancel the project
      *
      * @param projectName project name

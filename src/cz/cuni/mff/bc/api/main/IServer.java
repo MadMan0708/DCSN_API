@@ -222,4 +222,13 @@ public interface IServer extends Remote {
      * @throws RemoteException
      */
     public void cancelTaskOnClient(String clientName, TaskID taskToCancel) throws RemoteException;
+
+    /**
+     * Marks the project as corrupted
+     *
+     * @param clientName client's name
+     * @param projectName project name
+     * @throws RemoteException
+     */
+    public void markProjectAsCorrupted(String clientName, String projectName) throws RemoteException;
 }
