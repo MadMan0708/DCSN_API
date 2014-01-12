@@ -125,8 +125,8 @@ public class StandardRemoteProvider {
     }
 
     /**
-     * Sends to server information about number of cores which can be used to task
-     * computation
+     * Sends to server information about number of cores which can be used to
+     * task computation
      *
      * @param cores
      */
@@ -143,8 +143,8 @@ public class StandardRemoteProvider {
      * Tries to pause the project
      *
      * @param projectName project name
-     * @return true if the project has been paused, false if the project doesn't exist
-     * or exception has been thrown
+     * @return true if the project has been paused, false if the project doesn't
+     * exist or exception has been thrown
      */
     public Boolean pauseProject(String projectName) {
         try {
@@ -165,8 +165,8 @@ public class StandardRemoteProvider {
      * Tries to resume the project
      *
      * @param projectName project name
-     * @return true if the project has been resumed, false if the project doesn't exist
-     * or exception has been thrown
+     * @return true if the project has been resumed, false if the project
+     * doesn't exist or exception has been thrown
      */
     public Boolean resumeProject(String projectName) {
         try {
@@ -187,8 +187,8 @@ public class StandardRemoteProvider {
      * Tries to cancel the project
      *
      * @param projectName project name
-     * @return true if the project has been cancelled, false if the project doesn't
-     * exist or exception has been thrown
+     * @return true if the project has been cancelled, false if the project
+     * doesn't exist or exception has been thrown
      */
     public Boolean cancelProject(String projectName) {
         try {
@@ -230,8 +230,8 @@ public class StandardRemoteProvider {
      * Tests if project is ready for download
      *
      * @param projectName project name
-     * @return true if the project is ready for download, false if the project is not
-     * ready for download or exception has been thrown
+     * @return true if the project is ready for download, false if the project
+     * is not ready for download or exception has been thrown
      */
     public Boolean isProjectReadyForDownload(String projectName) {
         try {
@@ -329,7 +329,7 @@ public class StandardRemoteProvider {
         } catch (RemoteException e) {
             LOG.log(Level.WARNING, "Problem with network during uploading: {0}", e.getMessage());
         } catch (IOException e) {
-            LOG.log(Level.WARNING, "Jar file {0} couldn not be accessed", projectJar.getFileName());
+            LOG.log(Level.WARNING, "Jar file {0} couldn't be accessed or is not correct project", projectJar.getFileName());
         }
     }
 
