@@ -11,5 +11,28 @@ package cz.cuni.mff.bc.api.enums;
  */
 public enum ProjectState {
 
-    ACTIVE, PAUSED, CANCELED, COMPLETED, READY_FOR_DOWNLOAD, PREPARING, CORRUPTED
+    /**
+     * Active project
+     */
+    ACTIVE,
+    /**
+     * Paused project
+     */
+    PAUSED,
+    /**
+     * Completed project, packing is not completed
+     */
+    COMPLETED,
+    /**
+     * Project packed and ready for download
+     */
+    READY_FOR_DOWNLOAD,
+    /**
+     * Project is preparing for the calculation
+     */
+    PREPARING,
+    /**
+     * Project is corrupted
+     */
+    CORRUPTED
 }

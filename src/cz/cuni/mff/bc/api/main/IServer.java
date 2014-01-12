@@ -4,11 +4,6 @@
  */
 package cz.cuni.mff.bc.api.main;
 
-/**
- * Remote interface, used for RMI calls
- *
- * @author Jakub Hava
- */
 import cz.cuni.mff.bc.api.enums.InformMessage;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -16,6 +11,11 @@ import java.util.ArrayList;
 import org.cojen.dirmi.Asynchronous;
 import org.cojen.dirmi.Pipe;
 
+/**
+ * Remote interface, used for RMI calls
+ *
+ * @author Jakub Hava
+ */
 public interface IServer extends Remote {
 
     /**

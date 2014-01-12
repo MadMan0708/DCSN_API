@@ -11,5 +11,12 @@ package cz.cuni.mff.bc.api.enums;
  */
 public enum InformMessage {
 
-    CALCULATION_STARTED, CALCULATION_ENDED
+    /**
+     * Describes start of the calculation on the client
+     */
+    CALCULATION_STARTED,
+    /**
+     * Describes end of the calculation on the client
+     */
+    CALCULATION_ENDED
 }

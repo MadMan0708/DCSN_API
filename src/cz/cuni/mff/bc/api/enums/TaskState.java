@@ -11,5 +11,16 @@ package cz.cuni.mff.bc.api.enums;
  */
 public enum TaskState {
 
-    BEFORE_START, COMPLETE, IN_PROGRESS
+    /**
+     * Task calculation haven't started yet
+     */
+    BEFORE_START,
+    /**
+     * Task calculation is complete
+     */
+    COMPLETE,
+    /**
+     * Task calculation is in progress
+     */
+    IN_PROGRESS
 }
