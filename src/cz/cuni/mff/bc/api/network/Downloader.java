@@ -14,8 +14,9 @@ import java.rmi.RemoteException;
 import org.cojen.dirmi.Pipe;
 
 /**
+ * Class used to download projects from the server
  *
- * @author Aku
+ * @author Jakub Hava
  */
 public class Downloader implements IUpDown {
 
@@ -27,18 +28,25 @@ public class Downloader implements IUpDown {
     private File downloadFile;
     private long downloadFileLength;
 
-    public Downloader(IServer remoteService, String clientName, String projectName, Path fileSave) {
+    /**
+     * Constructor
+     *
+     * @param remoteService remote interface implementation
+     * @param clientName client's name
+     * @param projectName project name
+     * @param destination path where file will be downloaded
+     */
+    public Downloader(IServer remoteService, String clientName, String projectName, Path destination) {
         this.remoteService = remoteService;
         this.projectName = projectName;
         this.clientName = clientName;
         this.downloadProgress = 0;
         this.bytesReaded = 0;
-        this.downloadFile = fileSave.toFile();
+        this.downloadFile = destination.toFile();
     }
 
     @Override
     public Object call() throws Exception {
-        //int downloadProgressTemp = -1;
         try {
             downloadFileLength = remoteService.getProjectFileSize(clientName, projectName);
         } catch (RemoteException e) {
@@ -53,19 +61,13 @@ public class Downloader implements IUpDown {
                 out.write(buffer, 0, n);
                 bytesReaded = bytesReaded + n;
                 downloadProgress = (int) Math.ceil(100 / (float) downloadFileLength * bytesReaded);
-                //  if (downloadProgress % 5 == 0 && downloadProgress != downloadProgressTemp) {
-                //      downloadProgressTemp = downloadProgress;
-                //      logger.log("Project: " + projectID + ", Downloaded: " + downloadProgress + " %...");
-                //  }
             }
 
             pipe.close();
             return null;
-            // logger.log("Project " + projectID + " has been downloaded");
         } catch (IOException e) {
             throw new IOException("Problem durring accessing project file: " + projectName);
         }
-
     }
 
     @Override

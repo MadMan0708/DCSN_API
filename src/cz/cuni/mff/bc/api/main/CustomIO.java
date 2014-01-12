@@ -4,9 +4,6 @@
  */
 package cz.cuni.mff.bc.api.main;
 
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -17,18 +14,31 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-
 /**
+ * Basic I/O methods
  *
- * @author Jakub
+ * @author Jakub Hava
  */
 public class CustomIO {
 
+    /**
+     * Gets the extension of the file
+     *
+     * @param file
+     * @return extension of the file
+     */
     public static String getExtension(File file) {
         int dotIndex = file.getName().lastIndexOf(".") + 1;
         return file.getName().substring(dotIndex);
     }
 
+    /**
+     * Extracts zip file do destination folder
+     *
+     * @param zip zip file location
+     * @param dest destination folder
+     * @throws IOException
+     */
     public static void extractZipFile(File zip, File dest) throws IOException {
         byte[] buffer = new byte[1024];
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zip))) {
@@ -63,8 +73,7 @@ public class CustomIO {
         zos.putNextEntry(entry);
         try (FileInputStream fis = new FileInputStream(file)) {
             byte[] byteBuffer = new byte[1024];
-            int bytesRead = -1;
-
+            int bytesRead;
             while ((bytesRead = fis.read(byteBuffer)) != -1) {
                 zos.write(byteBuffer, 0, bytesRead);
             }
@@ -72,6 +81,13 @@ public class CustomIO {
         }
     }
 
+    /**
+     * Zips the file in array to one output zip
+     *
+     * @param zip destination zip file
+     * @param files array of files to be zipped
+     * @throws IOException
+     */
     public static void zipFiles(File zip, File[] files) throws IOException {
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zip))) {
             for (File file : files) {
@@ -80,6 +96,12 @@ public class CustomIO {
         }
     }
 
+    /**
+     * Creates the folder
+     *
+     * @param folder file which represents the folder
+     * @return file which represents the folder
+     */
     public static File createFolder(File folder) {
         if (!folder.exists()) {
             folder.mkdirs();
@@ -87,10 +109,22 @@ public class CustomIO {
         return folder;
     }
 
+    /**
+     * Copies the file
+     *
+     * @param from origin file
+     * @param to destination file
+     * @throws IOException
+     */
     public static void copyFile(File from, File to) throws IOException {
         Files.copy(from.toPath(), to.toPath());
     }
 
+    /**
+     * Deletes the directory and all its content recursively
+     *
+     * @param dir directory to delete
+     */
     public static void deleteDirectory(File dir) {
         File[] files = dir.listFiles();
         if (files != null) {
@@ -105,6 +139,13 @@ public class CustomIO {
         dir.delete();
     }
 
+    /**
+     * Deletes files in the directory. It deletes only those files, which name
+     * matches the pattern
+     *
+     * @param dirWhere
+     * @param pattern
+     */
     public static void deleteWithPattern(File dirWhere, final String pattern) {
         File[] files = dirWhere.listFiles(new FilenameFilter() {
             @Override

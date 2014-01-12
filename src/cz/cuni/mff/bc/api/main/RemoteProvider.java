@@ -21,7 +21,7 @@ import java.util.concurrent.Future;
  * Provides basic methods from server. Using these methods requires own
  * RemoteException handling and logging if needed
  *
- * @author Jakub
+ * @author Jakub Hava
  */
 public class RemoteProvider {
 
@@ -92,7 +92,7 @@ public class RemoteProvider {
     }
 
     /**
-     * Sends server information about memory limit which can tasks use during
+     * Sends to server information about memory limit which can tasks use during
      * computation
      *
      * @param memory
@@ -103,8 +103,8 @@ public class RemoteProvider {
     }
 
     /**
-     * Sends server information about number of cores which can be used to task
-     * computation
+     * Sends to server information about number of cores which can be used to
+     * task computation
      *
      * @param cores
      * @throws RemoteException
@@ -128,6 +128,7 @@ public class RemoteProvider {
     }
 
     /**
+     * Checks if the client is connected
      *
      * @return true if client is connected, false otherwise
      */
@@ -139,6 +140,12 @@ public class RemoteProvider {
         }
     }
 
+    /**
+     * Checks if the client has tasks in progress
+     *
+     * @return true if client has tasks in progress, false otherwise
+     * @throws RemoteException
+     */
     public boolean hasClientTasksInProgress() throws RemoteException {
         if (remoteService.hasClientTasksInProgress(clientName)) {
             return true;
@@ -212,7 +219,7 @@ public class RemoteProvider {
     /**
      *
      * @param projectName project name
-     * @return true if project has been cancelled, false if project doesn't
+     * @return true if the project has been cancelled, false if the project doesn't
      * exist
      * @throws RemoteException
      */
@@ -227,7 +234,7 @@ public class RemoteProvider {
     /**
      *
      * @param projectName project name
-     * @return true if project has been paused, false if project doesn't exist
+     * @return true if the project has been paused, false if the project doesn't exist
      * @throws RemoteException
      */
     public boolean pauseProject(String projectName) throws RemoteException {
@@ -241,7 +248,7 @@ public class RemoteProvider {
     /**
      *
      * @param projectName project name
-     * @return true if project has been resumed, false if project doesn't exist
+     * @return true if the project has been resumed, false if the project doesn't exist
      * @throws RemoteException
      */
     public boolean resumeProject(String projectName) throws RemoteException {
@@ -263,7 +270,7 @@ public class RemoteProvider {
 
     /**
      *
-     * @param state project state to filter projects
+     * @param state project state to filter project list
      * @return list of client's project with given state
      * @throws RemoteException
      */

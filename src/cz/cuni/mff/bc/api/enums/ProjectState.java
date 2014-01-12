@@ -5,8 +5,9 @@
 package cz.cuni.mff.bc.api.enums;
 
 /**
+ * Project states
  *
- * @author Aku
+ * @author Jakub Hava
  */
 public enum ProjectState {
 

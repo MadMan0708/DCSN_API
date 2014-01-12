@@ -10,19 +10,33 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
+ * Class used to check the progress of any class which implements IUpDown
+ * interface
  *
- * @author Jakub
+ * @author Jakub Hava
  */
 public class ProgressChecker {
 
     private Future<?> future;
     private IUpDown upDown;
 
+    /**
+     * Constructor
+     *
+     * @param future future which represents active IUpDown object
+     * @param upDown implementation of the IUpDown interface
+     */
     public ProgressChecker(Future<?> future, IUpDown upDown) {
         this.future = future;
         this.upDown = upDown;
     }
 
+    /**
+     * Checks if the downloading or uploading is still in progress
+     *
+     * @return true if the downloading or uploading is still in progress, false
+     * otherwise
+     */
     public boolean isInProgress() {
         if (!future.isDone()) {
             return true;
@@ -31,11 +45,22 @@ public class ProgressChecker {
         }
     }
 
+    /**
+     * Gets the progress
+     *
+     * @return percentage of the progress
+     */
     public int getProgress() {
         return upDown.getProgress();
     }
 
-    public boolean wasSuccesfull() throws RemoteException, IOException {
+    /**
+     *
+     * @return true if downloading or uploading was successful
+     * @throws RemoteException
+     * @throws IOException
+     */
+    public boolean wasSuccesful() throws RemoteException, IOException {
         if (upDown.isCompleted()) {
             return true;
         } else {
@@ -50,7 +75,6 @@ public class ProgressChecker {
                     throw new RemoteException(e.getCause().getMessage());
                 }
             } catch (InterruptedException e) {
-                // TODO
             }
             return false;
         }

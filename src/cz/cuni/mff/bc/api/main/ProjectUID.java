@@ -9,24 +9,39 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
+ * Represents unique project id
  *
- * @author Jakub
+ * @author Jakub Hava
  */
 public class ProjectUID implements Serializable {
 
-    private String clientID;
-    private String projectID;
+    private String clientName;
+    private String projectName;
     private ProjectState state;
 
-    public ProjectUID(String clientID, String projectID) {
-        this.clientID = clientID;
-        this.projectID = projectID;
+    /**
+     * Constructor
+     *
+     * @param clientName client's name
+     * @param projectName project name
+     */
+    public ProjectUID(String clientName, String projectName) {
+        this.clientName = clientName;
+        this.projectName = projectName;
     }
 
+    /**
+     *
+     * @return project state
+     */
     public ProjectState getState() {
         return state;
     }
 
+    /**
+     *
+     * @param state project state
+     */
     public void setState(ProjectState state) {
         this.state = state;
     }
@@ -34,18 +49,27 @@ public class ProjectUID implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 41 * hash + Objects.hashCode(this.clientID);
-        hash = 41 * hash + Objects.hashCode(this.projectID);
+        hash = 41 * hash + Objects.hashCode(this.clientName);
+        hash = 41 * hash + Objects.hashCode(this.projectName);
         return hash;
     }
 
-    public String getProjectID() {
-        return projectID;
+    /**
+     *
+     * @return project name
+     */
+    public String getProjectName() {
+        return projectName;
     }
 
-    public String getClientID() {
-        return clientID;
+    /**
+     *
+     * @return client's name
+     */
+    public String getClientName() {
+        return clientName;
     }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -55,10 +79,10 @@ public class ProjectUID implements Serializable {
             return false;
         }
         final ProjectUID other = (ProjectUID) obj;
-        if (!Objects.equals(this.clientID, other.clientID)) {
+        if (!Objects.equals(this.clientName, other.clientName)) {
             return false;
         }
-        if (!Objects.equals(this.projectID, other.projectID)) {
+        if (!Objects.equals(this.projectName, other.projectName)) {
             return false;
         }
         return true;

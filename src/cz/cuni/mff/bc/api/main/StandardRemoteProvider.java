@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * RemoteExceptions handling and default logging. If you need use these methods
  * with own logging, use class RemoteProvider
  *
- * @author Jakub
+ * @author Jakub Hava
  */
 public class StandardRemoteProvider {
 
@@ -32,7 +32,6 @@ public class StandardRemoteProvider {
      * @param clientName client name
      * @param downloadDir download directory
      * @param uploadDir upload directory
-     * @param logHandler logging handler
      * @param currentJar path to project jar
      * @param logger logger
      */
@@ -71,7 +70,7 @@ public class StandardRemoteProvider {
 
     /**
      *
-     * @return path to project jar
+     * @return path to the project jar
      */
     public Path getCurrentJarPath() {
         return remoteProvider.getCurrentJarPath();
@@ -93,6 +92,10 @@ public class StandardRemoteProvider {
         return remoteProvider.getClientName();
     }
 
+    /**
+     *
+     * @return logger
+     */
     public Logger getLogger() {
         return LOG;
     }
@@ -107,7 +110,7 @@ public class StandardRemoteProvider {
     }
 
     /**
-     * Sends server information about memory limit which can tasks use during
+     * Sends to server information about memory limit which can tasks use during
      * computation
      *
      * @param memory
@@ -122,7 +125,7 @@ public class StandardRemoteProvider {
     }
 
     /**
-     * Sends server information about number of cores which can be used to task
+     * Sends to server information about number of cores which can be used to task
      * computation
      *
      * @param cores
@@ -137,10 +140,10 @@ public class StandardRemoteProvider {
     }
 
     /**
-     * Tries to pause project
+     * Tries to pause the project
      *
      * @param projectName project name
-     * @return true if project has been paused, false if project doesn't exist
+     * @return true if the project has been paused, false if the project doesn't exist
      * or exception has been thrown
      */
     public Boolean pauseProject(String projectName) {
@@ -159,10 +162,10 @@ public class StandardRemoteProvider {
     }
 
     /**
-     * Tries to resume project
+     * Tries to resume the project
      *
      * @param projectName project name
-     * @return true if project has been resumed, false if project doesn't exist
+     * @return true if the project has been resumed, false if the project doesn't exist
      * or exception has been thrown
      */
     public Boolean resumeProject(String projectName) {
@@ -181,10 +184,10 @@ public class StandardRemoteProvider {
     }
 
     /**
-     * Tries to cancel project
+     * Tries to cancel the project
      *
      * @param projectName project name
-     * @return true if project has been cancelled, false if project doesn't
+     * @return true if the project has been cancelled, false if the project doesn't
      * exist or exception has been thrown
      */
     public Boolean cancelProject(String projectName) {
@@ -227,7 +230,7 @@ public class StandardRemoteProvider {
      * Tests if project is ready for download
      *
      * @param projectName project name
-     * @return true if project is ready for download, false if project is not
+     * @return true if the project is ready for download, false if the project is not
      * ready for download or exception has been thrown
      */
     public Boolean isProjectReadyForDownload(String projectName) {
@@ -246,7 +249,7 @@ public class StandardRemoteProvider {
     }
 
     /**
-     * Downloads the projects with progress logging and exception handling
+     * Downloads the project with progress logging and exception handling
      *
      * @param projectName project name
      * @param destination path to destination file
@@ -269,7 +272,7 @@ public class StandardRemoteProvider {
                             }
                         }
                         try {
-                            pc.wasSuccesfull();
+                            pc.wasSuccesful();
                             LOG.log(Level.INFO, "Project: {0}, Downloaded: 100 %...", projectNameLocal);
                             LOG.log(Level.INFO, "Project {0} has been downloaded", projectNameLocal);
                         } catch (RemoteException e) {
@@ -289,7 +292,7 @@ public class StandardRemoteProvider {
 
     /**
      *
-     * Uploads the projects with progress logging and exception handling
+     * Uploads the project with progress logging and exception handling
      *
      * @param projectJar path to project jar
      * @param projectData path to project data
@@ -312,7 +315,7 @@ public class StandardRemoteProvider {
                             }
                         }
                         try {
-                            pc.wasSuccesfull();
+                            pc.wasSuccesful();
                             LOG.log(Level.INFO, "Project: {0}, Uploaded: 100 %...", projectName);
                             LOG.log(Level.INFO, "Project {0} has been uploaded", projectName);
                         } catch (IOException e) {
@@ -331,7 +334,7 @@ public class StandardRemoteProvider {
     }
 
     /**
-     * Prints information about project
+     * Prints information about the project
      *
      * @param projectName project name
      */
@@ -375,7 +378,7 @@ public class StandardRemoteProvider {
     }
 
     /**
-     * Prints basic information about client's projects in given state
+     * Prints basic information about client's projects with given state
      *
      * @param state state used to filter projects
      */

@@ -14,8 +14,9 @@ import java.nio.file.Path;
 import org.cojen.dirmi.Pipe;
 
 /**
+ * Class used ti upload projects to the server
  *
- * @author Aku
+ * @author Jakub Hava
  */
 public class Uploader implements IUpDown {
 
@@ -32,6 +33,19 @@ public class Uploader implements IUpDown {
     private int time;
     private File tmp;
 
+    /**
+     * Constructor
+     *
+     * @param remoteService remote interface implementation
+     * @param projectJar path to project jar
+     * @param projectData path to project data
+     * @param clientName client's name
+     * @param projectName project name
+     * @param priority project priority
+     * @param cores number of cores needed by task
+     * @param memory amount of memory needed by task
+     * @param time average time of task to be calculated
+     */
     public Uploader(IServer remoteService, Path projectJar, Path projectData,
             String clientName, String projectName, int priority, int cores, int memory, int time) {
         this.remoteService = remoteService;

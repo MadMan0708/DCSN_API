@@ -9,15 +9,28 @@ import java.rmi.Remote;
  * and open the template in the editor.
  */
 /**
+ * Interface which represents the general task
  *
- * @author Aku
+ * @author Jakub Hava
  */
 public interface ITask extends Remote, Serializable {
+
+    /**
+     * Loads the data
+     *
+     * @param from path to the data file
+     */
     public void loadData(Path from);
 
+    /**
+     * Saves the data
+     *
+     * @param to path to the data file
+     */
     public void saveData(Path to);
 
+    /**
+     * Method does the calculation on loaded data
+     */
     public void calculate();
-    
-    // public void calculationState();
 }

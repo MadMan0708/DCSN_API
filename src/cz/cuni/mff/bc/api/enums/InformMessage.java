@@ -5,9 +5,11 @@
 package cz.cuni.mff.bc.api.enums;
 
 /**
+ * Computation statuses
  *
- * @author Aku
+ * @author Jakub Hava
  */
 public enum InformMessage {
-    CALCULATION_STARTED,CALCULATION_ENDED
+
+    CALCULATION_STARTED, CALCULATION_ENDED
 }

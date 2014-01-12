@@ -5,9 +5,11 @@
 package cz.cuni.mff.bc.api.enums;
 
 /**
+ * Task states
  *
- * @author Aku
+ * @author Jakub Hava
  */
 public enum TaskState {
-    BEFORE_START,COMPLETE,IN_PROGRESS
+
+    BEFORE_START, COMPLETE, IN_PROGRESS
 }

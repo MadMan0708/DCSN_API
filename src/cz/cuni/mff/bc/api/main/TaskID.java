@@ -9,75 +9,130 @@ import java.util.Objects;
 
 /**
  *
- * @author Aku
+ * @author Jakub Hava
  */
 public class TaskID implements Serializable {
 
-    private int coreUsage;
-    private int memoryUsage;
-    private int runningTime;
+    private int cores;
+    private int memory;
+    private int time;
     private int priority;
-    private String projectID;
-    private String clientID;
-    private String taskID;
+    private String projectName;
+    private String clientName;
+    private String taskName;
 
-    public TaskID(String projectID, String clientID, String taskID, int priority, int cores, int memory, int runningTime) {
-        this.projectID = projectID;
-        this.clientID = clientID;
-        this.taskID = taskID;
-        this.coreUsage = cores;
-        this.memoryUsage = memory;
-        this.runningTime = runningTime;
+    /**
+     * Constructor
+     *
+     * @param projectName project name
+     * @param clientName client's name
+     * @param taskName task name
+     * @param priority project priority
+     * @param cores number of cores needed by task
+     * @param memory amount of memory needed by task
+     * @param time average time of task to be calculated
+     */
+    public TaskID(String projectName, String clientName, String taskName, int priority, int cores, int memory, int time) {
+        this.projectName = projectName;
+        this.clientName = clientName;
+        this.taskName = taskName;
+        this.cores = cores;
+        this.memory = memory;
+        this.time = time;
         this.priority = priority;
     }
 
-    public int getCoreUsage() {
-        return coreUsage;
+    /**
+     *
+     * @return number of cores needed by task
+     */
+    public int getCores() {
+        return cores;
     }
 
-    public void setCoreUsage(int coreUsage) {
-        this.coreUsage = coreUsage;
+    /**
+     *
+     * @param cores number of cores needed by task
+     */
+    public void setCores(int cores) {
+        this.cores = cores;
     }
 
-    public int getMemoryUsage() {
-        return memoryUsage;
+    /**
+     *
+     * @return amount of memory needed by task
+     */
+    public int getMemory() {
+        return memory;
     }
 
-    public void setMemoryUsage(int memoryUsage) {
-        this.memoryUsage = memoryUsage;
+    /**
+     *
+     * @param memory amount of memory needed by task
+     */
+    public void setMemory(int memory) {
+        this.memory = memory;
     }
 
-    public int getRunningTime() {
-        return runningTime;
+    /**
+     *
+     * @return average time of task to be calculated
+     */
+    public int getTime() {
+        return time;
     }
 
-    public void setRunningTime(int runningTime) {
-        this.runningTime = runningTime;
+    /**
+     *
+     * @param time average time of task to be calculated
+     */
+    public void setTime(int time) {
+        this.time = time;
     }
 
+    /**
+     *
+     * @return project priority
+     */
     public int getPriority() {
         return priority;
     }
 
-    public String getProjectID() {
-        return projectID;
+    /**
+     *
+     * @return project name
+     */
+    public String getProjectName() {
+        return projectName;
     }
 
+    /**
+     *
+     * @return project unique id
+     */
     public ProjectUID getProjectUID() {
-        return new ProjectUID(clientID, projectID);
+        return new ProjectUID(clientName, projectName);
     }
 
-    public String getClientID() {
-        return clientID;
+    /**
+     *
+     * @return client's name
+     */
+    public String getClientName() {
+        return clientName;
     }
 
-    public String getTaskID() {
-        return taskID;
+    /**
+     *
+     * @return task name
+     */
+    public String getTaskName() {
+        return taskName;
     }
 
     @Override
     public String toString() {
-        return clientID + "_" + projectID + "_" + taskID;
+        return clientName + "_" + projectName + "_" + taskName;
     }
 
     @Override
@@ -89,7 +144,7 @@ public class TaskID implements Serializable {
             return false;
         } else {
             TaskID ID = (TaskID) other;
-            if (this.clientID.equals(ID.getClientID()) && this.projectID.equals(ID.getProjectID()) && this.taskID.equals(ID.getTaskID())) {
+            if (this.clientName.equals(ID.getClientName()) && this.projectName.equals(ID.getProjectName()) && this.taskName.equals(ID.getTaskName())) {
                 return true;
             } else {
                 return false;
@@ -100,9 +155,9 @@ public class TaskID implements Serializable {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 53 * hash + Objects.hashCode(this.projectID);
-        hash = 53 * hash + Objects.hashCode(this.clientID);
-        hash = 53 * hash + Objects.hashCode(this.taskID);
+        hash = 53 * hash + Objects.hashCode(this.projectName);
+        hash = 53 * hash + Objects.hashCode(this.clientName);
+        hash = 53 * hash + Objects.hashCode(this.taskName);
         return hash;
     }
 }
