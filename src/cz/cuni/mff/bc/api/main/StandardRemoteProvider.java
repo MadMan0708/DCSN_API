@@ -306,7 +306,17 @@ public class StandardRemoteProvider {
             LOG.log(Level.WARNING, "Zip file is corrupted");
             return;
         }
+
         try {
+            try {
+                int projectPriority = Integer.parseInt(JarAPI.getAttributeFromManifest(projectJar, "Project-Priority"));
+                if (projectPriority <= 0 || projectPriority > 10) {
+                    LOG.log(Level.WARNING, "Project priority range is from 1 to 10");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                LOG.log(Level.WARNING, "Project priority has to be integer in range from 1 to 10");
+            }
             final String projectName = JarAPI.getAttributeFromManifest(projectJar, "Project-Name");
             final ProgressChecker pc = remoteProvider.uploadProject(projectJar, projectData);
             if (pc != null) {
