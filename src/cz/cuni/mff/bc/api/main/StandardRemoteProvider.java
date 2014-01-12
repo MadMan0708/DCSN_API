@@ -298,14 +298,13 @@ public class StandardRemoteProvider {
      * @param projectData path to project data
      */
     public void uploadProject(Path projectJar, Path projectData) {
-        switch (CustomIO.getExtension(projectData.toFile())) {
-            case "zip":
-                break;
-            case "tar":
-                break;
-            default:
-                LOG.log(Level.WARNING, "Possible archives are *.zip and *.tar");
-                return;
+        if (!CustomIO.getExtension(projectData.toFile()).equals("zip")) {
+            LOG.log(Level.WARNING, "Possible archive for data files is only *.zip");
+            return;
+        }
+        if (!CustomIO.isZipValid(projectData.toFile())) {
+            LOG.log(Level.WARNING, "Zip file is corrupted");
+            return;
         }
         try {
             final String projectName = JarAPI.getAttributeFromManifest(projectJar, "Project-Name");
