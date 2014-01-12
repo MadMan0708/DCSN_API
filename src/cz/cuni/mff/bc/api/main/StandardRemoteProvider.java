@@ -298,6 +298,15 @@ public class StandardRemoteProvider {
      * @param projectData path to project data
      */
     public void uploadProject(Path projectJar, Path projectData) {
+        switch (CustomIO.getExtension(projectData.toFile())) {
+            case "zip":
+                break;
+            case "tar":
+                break;
+            default:
+                LOG.log(Level.WARNING, "Possible archives are *.zip and *.tar");
+                return;
+        }
         try {
             final String projectName = JarAPI.getAttributeFromManifest(projectJar, "Project-Name");
             final ProgressChecker pc = remoteProvider.uploadProject(projectJar, projectData);
