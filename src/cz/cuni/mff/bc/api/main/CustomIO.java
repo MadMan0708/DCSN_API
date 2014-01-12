@@ -11,6 +11,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -20,6 +22,32 @@ import java.util.zip.ZipOutputStream;
  * @author Jakub Hava
  */
 public class CustomIO {
+
+    /**
+     * Checks if the zip file is valid
+     *
+     * @param file zip file to be checked
+     * @return true if zip is valid, false otherwise
+     */
+    public static boolean isZipValid(final File file) {
+        ZipFile zipfile = null;
+        try {
+            zipfile = new ZipFile(file);
+            return true;
+        } catch (ZipException e) {
+            return false;
+        } catch (IOException e) {
+            return false;
+        } finally {
+            try {
+                if (zipfile != null) {
+                    zipfile.close();
+                    zipfile = null;
+                }
+            } catch (IOException e) {
+            }
+        }
+    }
 
     /**
      * Gets the extension of the file
