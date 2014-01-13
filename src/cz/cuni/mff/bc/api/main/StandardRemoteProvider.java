@@ -310,6 +310,60 @@ public class StandardRemoteProvider {
     }
 
     /**
+     * Checks project parameters in project jar file
+     *
+     * @param projectJar project jar
+     * @return true if parameters are correct, false otherwise
+     * @throws IOException
+     */
+    public boolean checkProjectParams(Path projectJar) throws IOException {
+        boolean ok = true;
+        try {
+            int projectPriority = Integer.parseInt(JarAPI.getAttributeFromManifest(projectJar, "Project-Priority"));
+            if (projectPriority <= 0 || projectPriority > 10) {
+                LOG.log(Level.WARNING, "Project priority range is from 1 to 10");
+                ok = false;
+            }
+        } catch (NumberFormatException e) {
+            LOG.log(Level.WARNING, "Project priority has to be integer in range from 1 to 10");
+            ok = false;
+        }
+        try {
+            int memory = Integer.parseInt(JarAPI.getAttributeFromManifest(projectJar, "Memory-Per-Task"));
+            if (memory <= 0) {
+                LOG.log(Level.WARNING, "Memory limit has to be bigger then 0 megabytes");
+                ok = false;
+            }
+        } catch (NumberFormatException e) {
+            LOG.log(Level.WARNING, "Memory limit has to be integer bigger then 0");
+            ok = false;
+        }
+
+        try {
+            int cores = Integer.parseInt(JarAPI.getAttributeFromManifest(projectJar, "Cores-Per-Task"));
+            if (cores <= 0) {
+                LOG.log(Level.WARNING, "Cores limit has to be bigger then 0 ");
+                ok = false;
+            }
+        } catch (NumberFormatException e) {
+            LOG.log(Level.WARNING, "Cores limit has to be integer bigger then 0");
+            ok = false;
+        }
+
+        try {
+            int time = Integer.parseInt(JarAPI.getAttributeFromManifest(projectJar, "Time-Per-Task"));
+            if (time <= 0) {
+                LOG.log(Level.WARNING, "Time has to be bigger then 0");
+                ok = false;
+            }
+        } catch (NumberFormatException e) {
+            LOG.log(Level.WARNING, "Time  has to be integer bigger then 0");
+            ok = false;
+        }
+        return ok;
+    }
+
+    /**
      *
      * Uploads the project with progress logging and exception handling
      *
@@ -327,14 +381,8 @@ public class StandardRemoteProvider {
         }
 
         try {
-            try {
-                int projectPriority = Integer.parseInt(JarAPI.getAttributeFromManifest(projectJar, "Project-Priority"));
-                if (projectPriority <= 0 || projectPriority > 10) {
-                    LOG.log(Level.WARNING, "Project priority range is from 1 to 10");
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                LOG.log(Level.WARNING, "Project priority has to be integer in range from 1 to 10");
+            if (!checkProjectParams(projectJar)) {
+                return;
             }
             final String projectName = JarAPI.getAttributeFromManifest(projectJar, "Project-Name");
             final ProgressChecker pc = remoteProvider.uploadProject(projectJar, projectData);
