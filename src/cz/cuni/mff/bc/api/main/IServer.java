@@ -40,11 +40,12 @@ public interface IServer extends Remote {
      * Gets task from the server
      *
      * @param clientName client's name
-     * @param taskID task id of the task to be downloaded
+     * @param projectUID project unique id which tells from which project will
+     * be the task downloaded
      * @return the task
      * @throws RemoteException
      */
-    public Task getTask(String clientName, TaskID taskID) throws RemoteException;
+    public Task getTask(String clientName, ProjectUID projectUID) throws RemoteException;
 
     /**
      * Saves the completed task on the server
