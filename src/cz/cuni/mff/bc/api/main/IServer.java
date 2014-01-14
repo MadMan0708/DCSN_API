@@ -134,14 +134,14 @@ public interface IServer extends Remote {
     public long getProjectFileSize(String clientName, String projectName) throws RemoteException;
 
     /**
-     * Gets the unique id of task which will calculated and associates the task
-     * with the client
+     * Gets the unique id of project which task will be calculated and
+     * associated by the client
      *
      * @param clientName client's name
-     * @return task unique id
+     * @return project unique id
      * @throws RemoteException
      */
-    public TaskID getTaskIdBeforeCalculation(String clientName) throws RemoteException;
+    public ProjectUID getProjectIdBeforeCalculation(String clientName) throws RemoteException;
 
     /**
      * Gets the list of client's projects
