@@ -17,7 +17,6 @@ public class ProjectUID implements Serializable {
 
     private String clientName;
     private String projectName;
-    private ProjectState state;
 
     /**
      * Constructor
@@ -28,22 +27,6 @@ public class ProjectUID implements Serializable {
     public ProjectUID(String clientName, String projectName) {
         this.clientName = clientName;
         this.projectName = projectName;
-    }
-
-    /**
-     *
-     * @return project state
-     */
-    public ProjectState getState() {
-        return state;
-    }
-
-    /**
-     *
-     * @param state project state
-     */
-    public void setState(ProjectState state) {
-        this.state = state;
     }
 
     @Override
