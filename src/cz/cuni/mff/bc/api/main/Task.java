@@ -5,6 +5,8 @@
 package cz.cuni.mff.bc.api.main;
 
 import cz.cuni.mff.bc.api.enums.TaskState;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.file.Path;
 
@@ -127,5 +129,13 @@ public class Task implements Serializable {
      */
     public TaskState getState() {
         return this.state;
+    }
+
+    private void writeObject(ObjectOutputStream os) throws Exception {
+        os.defaultWriteObject();
+    }
+
+    private void readObject(ObjectInputStream os) throws Exception {
+        os.defaultReadObject();
     }
 }
