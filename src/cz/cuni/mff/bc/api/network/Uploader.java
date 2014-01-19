@@ -19,7 +19,7 @@ import org.cojen.dirmi.Pipe;
  * @author Jakub Hava
  */
 public class Uploader implements IUpDown {
-
+    
     private IServer remoteService;
     private Path projectJar;
     private Path projectData;
@@ -60,14 +60,15 @@ public class Uploader implements IUpDown {
         this.uploadProgress = 0;
         this.bytesReaded = 0;
     }
-
+    
     private void prepareFileToUpload(File projectJar, File projectData, File tmp) throws IOException {
         CustomIO.zipFiles(tmp, new File[]{projectJar, projectData});
     }
-
+    
     @Override
     public Object call() throws Exception {
         tmp = File.createTempFile(clientName, projectName + ".zip");
+        CustomIO.recursiveDeleteOnShutdownHook(tmp.toPath());
         prepareFileToUpload(projectJar.toFile(), projectData.toFile(), tmp);
         long size = tmp.length();
         try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(tmp));
@@ -80,18 +81,17 @@ public class Uploader implements IUpDown {
                 uploadProgress = (int) Math.ceil(100 / (float) size * bytesReaded);
             }
             pipe.close();
-            tmp.delete();
             return null;
         } catch (IOException e) {
             throw new IOException("Problem during accessing project file: " + projectName);
         }
     }
-
+    
     @Override
     public int getProgress() {
         return this.uploadProgress;
     }
-
+    
     @Override
     public boolean isCompleted() {
         if (!tmp.exists()) {
@@ -99,6 +99,6 @@ public class Uploader implements IUpDown {
         } else {
             return bytesReaded == tmp.length();
         }
-
+        
     }
 }

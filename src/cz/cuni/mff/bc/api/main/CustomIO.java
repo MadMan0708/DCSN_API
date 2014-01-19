@@ -200,19 +200,36 @@ public class CustomIO {
      *
      * @param dir directory to delete
      */
-    public static void deleteDirOnExit(File dir) throws IOException {
-        Files.walkFileTree(dir.toPath(), new SimpleFileVisitor<Path>() {
+    public static void recursiveDeleteOnShutdownHook(final Path path) {
+        Runtime.getRuntime().addShutdownHook(new Thread(
+                new Runnable() {
             @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                file.toFile().deleteOnExit();
-                return FileVisitResult.CONTINUE;
-            }
+            public void run() {
+                try {
+                    Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+                        @Override
+                        public FileVisitResult visitFile(Path file,
+                                @SuppressWarnings("unused") BasicFileAttributes attrs)
+                                throws IOException {
+                            Files.delete(file);
+                            return FileVisitResult.CONTINUE;
+                        }
 
-            @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-                dir.toFile().deleteOnExit();
-                return FileVisitResult.CONTINUE;
+                        @Override
+                        public FileVisitResult postVisitDirectory(Path dir, IOException e)
+                                throws IOException {
+                            if (e == null) {
+                                Files.delete(dir);
+                                return FileVisitResult.CONTINUE;
+                            }
+                            // directory iteration failed
+                            throw e;
+                        }
+                    });
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to delete " + path, e);
+                }
             }
-        });
+        }));
     }
 }
