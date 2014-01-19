@@ -9,7 +9,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -188,5 +192,27 @@ public class CustomIO {
         for (File file : files) {
             file.delete();
         }
+    }
+
+    /**
+     * Deletes the directory and all its content recursively at closing the
+     * program
+     *
+     * @param dir directory to delete
+     */
+    public static void deleteDirOnExit(File dir) throws IOException {
+        Files.walkFileTree(dir.toPath(), new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                file.toFile().deleteOnExit();
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                dir.toFile().deleteOnExit();
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 }
