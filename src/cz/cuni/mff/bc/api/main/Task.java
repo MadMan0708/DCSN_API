@@ -20,7 +20,7 @@ public class Task implements Serializable {
     private TaskID unicateTaskID;
     private ITask computeTask;
     private TaskState state = TaskState.BEFORE_START;
-    private boolean dataHasBeenSaved = false;
+    private Boolean dataHasBeenSaved = false;
 
     /**
      * Constructor
@@ -132,10 +132,16 @@ public class Task implements Serializable {
     }
 
     private void writeObject(ObjectOutputStream os) throws Exception {
-        os.defaultWriteObject();
+        os.writeObject(unicateTaskID);
+        os.writeObject(computeTask);
+        os.writeObject(state);
+        os.writeObject(dataHasBeenSaved);
     }
 
     private void readObject(ObjectInputStream os) throws Exception {
-        os.defaultReadObject();
+        unicateTaskID = (TaskID) os.readObject();
+        computeTask = (ITask) os.readObject();
+        state = (TaskState) os.readObject();
+        dataHasBeenSaved = (Boolean) os.readObject();
     }
 }
