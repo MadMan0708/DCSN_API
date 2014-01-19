@@ -198,7 +198,7 @@ public class CustomIO {
      * Deletes the directory and all its content recursively at closing the
      * program
      *
-     * @param dir directory to delete
+     * @param path directory to delete
      */
     public static void recursiveDeleteOnShutdownHook(final Path path) {
         Runtime.getRuntime().addShutdownHook(new Thread(
@@ -227,7 +227,6 @@ public class CustomIO {
                         }
                     });
                 } catch (IOException e) {
-                    throw new RuntimeException("Failed to delete " + path, e);
                 }
             }
         }));
