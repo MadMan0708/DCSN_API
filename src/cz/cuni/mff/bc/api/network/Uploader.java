@@ -61,7 +61,7 @@ public class Uploader implements IUpDown {
         this.bytesReaded = 0;
     }
 
-    private void prepareFileToUpload(File projectJar, File projectData, File dest) throws IOException {
+    private void prepareFileToUpload(File projectJar, File projectData, File tmp) throws IOException {
         CustomIO.zipFiles(tmp, new File[]{projectJar, projectData});
     }
 
@@ -80,6 +80,7 @@ public class Uploader implements IUpDown {
                 uploadProgress = (int) Math.ceil(100 / (float) size * bytesReaded);
             }
             pipe.close();
+            tmp.delete();
             return null;
         } catch (IOException e) {
             throw new IOException("Problem during accessing project file: " + projectName);
