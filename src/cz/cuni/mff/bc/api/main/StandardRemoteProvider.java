@@ -198,7 +198,6 @@ public class StandardRemoteProvider {
      *
      * @param ownerName name of the owner of the project
      * @param projectName project name
-     * @throws RemoteException
      * @return true if the project was successfully marked as corrupted
      */
     public Boolean markProjectAsCurrupted(String ownerName, String projectName) {
@@ -283,10 +282,10 @@ public class StandardRemoteProvider {
      * @param projectName project name
      * @param destination path to destination file
      */
-    public void download(String projectName, File destination) {
+    public void download(String projectName, Path destination) {
         try {
             final String projectNameLocal = projectName;
-            final ProgressChecker pc = remoteProvider.downloadProject(projectName, destination.toPath());
+            final ProgressChecker pc = remoteProvider.downloadProject(projectName, destination);
             if (pc != null) {
                 new Thread(new Runnable() {
                     @Override

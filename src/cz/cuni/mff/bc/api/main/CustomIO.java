@@ -134,11 +134,11 @@ public class CustomIO {
      * @param folder file which represents the folder
      * @return file which represents the folder
      */
-    public static File createFolder(File folder) {
-        if (!folder.exists()) {
-            folder.mkdirs();
+    public static File createFolder(Path folder) {
+        if (!folder.toFile().exists()) {
+            folder.toFile().mkdirs();
         }
-        return folder;
+        return folder.toFile();
     }
 
     /**
@@ -157,29 +157,29 @@ public class CustomIO {
      *
      * @param dir directory to delete
      */
-    public static void deleteDirectory(File dir) {
-        File[] files = dir.listFiles();
+    public static void deleteDirectory(Path dir) {
+        File[] files = dir.toFile().listFiles();
         if (files != null) {
             for (File f : files) {
                 if (f.isDirectory()) {
-                    deleteDirectory(f);
+                    deleteDirectory(f.toPath());
                 } else {
                     f.delete();
                 }
             }
         }
-        dir.delete();
+        dir.toFile().delete();
     }
 
     /**
      * Deletes files in the directory. It deletes only those files, which name
      * matches the pattern
      *
-     * @param dirWhere
-     * @param pattern
+     * @param dirWhere path to the directory to delete
+     * @param pattern pattern
      */
-    public static void deleteWithPattern(File dirWhere, final String pattern) {
-        File[] files = dirWhere.listFiles(new FilenameFilter() {
+    public static void deleteWithPattern(Path dirWhere, final String pattern) {
+        File[] files = dirWhere.toFile().listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
                 if (name.matches(pattern)) {
