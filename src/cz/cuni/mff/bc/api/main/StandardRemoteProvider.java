@@ -54,6 +54,14 @@ public class StandardRemoteProvider {
 
     /**
      *
+     * @return temporary directory which has been set in console
+     */
+    public Path getStandartTemporaryDir() {
+        return remoteProvider.getStandartTemporaryDir();
+    }
+
+    /**
+     *
      * @return download directory which has been set in console
      */
     public Path getStandartDownloadDir() {

@@ -31,6 +31,7 @@ public class RemoteProvider {
     private Path currentJar;
     private Path uploadDir;
     private Path downloadDir;
+    private Path temporaryDir;
 
     /**
      *
@@ -38,14 +39,16 @@ public class RemoteProvider {
      * @param clientName client name
      * @param downloadDir download directory
      * @param uploadDir upload directory
+     * @param temporaryDir temporary directory
      * @param currentJar path to project jar
      */
-    public RemoteProvider(IServer remoteService, String clientName, Path downloadDir, Path uploadDir, Path currentJar) {
+    public RemoteProvider(IServer remoteService, String clientName, Path downloadDir, Path uploadDir, Path temporaryDir, Path currentJar) {
         this.remoteService = remoteService;
         this.clientName = clientName;
         this.currentJar = currentJar;
         this.uploadDir = uploadDir;
         this.downloadDir = downloadDir;
+        this.temporaryDir = temporaryDir;
     }
 
     /**
@@ -53,10 +56,11 @@ public class RemoteProvider {
      * @param remoteService remote interface
      * @param clientName client name
      * @param downloadDir download directory
+     * @param temporaryDir temporary directory
      * @param uploadDir upload directory
      */
-    public RemoteProvider(IServer remoteService, String clientName, Path downloadDir, Path uploadDir) {
-        this(remoteService, clientName, downloadDir, uploadDir, null);
+    public RemoteProvider(IServer remoteService, String clientName, Path downloadDir, Path uploadDir, Path temporaryDir) {
+        this(remoteService, clientName, downloadDir, uploadDir, temporaryDir, null);
     }
 
     /**
@@ -65,6 +69,14 @@ public class RemoteProvider {
      */
     public String getClientName() {
         return clientName;
+    }
+
+    /**
+     *
+     * @return temporary directory which has been set in console
+     */
+    public Path getStandartTemporaryDir() {
+        return temporaryDir;
     }
 
     /**
