@@ -32,11 +32,12 @@ public class StandardRemoteProvider {
      * @param clientName client name
      * @param downloadDir download directory
      * @param uploadDir upload directory
+     * @param temporaryDir temporary directory
      * @param currentJar path to project jar
      * @param logger logger
      */
-    public StandardRemoteProvider(IServer remoteService, String clientName, Path downloadDir, Path uploadDir, Path currentJar, Logger logger) {
-        this.remoteProvider = new RemoteProvider(remoteService, clientName, downloadDir, uploadDir, currentJar);
+    public StandardRemoteProvider(IServer remoteService, String clientName, Path downloadDir, Path uploadDir, Path temporaryDir, Path currentJar, Logger logger) {
+        this.remoteProvider = new RemoteProvider(remoteService, clientName, downloadDir, uploadDir, temporaryDir, currentJar);
         LOG.setParent(logger);
     }
 
@@ -46,10 +47,11 @@ public class StandardRemoteProvider {
      * @param clientName client name
      * @param downloadDir download directory
      * @param uploadDir upload directory
+     * @param temporaryDir temporary directory
      * @param logger logger
      */
-    public StandardRemoteProvider(IServer remoteService, String clientName, Path downloadDir, Path uploadDir, Logger logger) {
-        this(remoteService, clientName, null, downloadDir, uploadDir, logger);
+    public StandardRemoteProvider(IServer remoteService, String clientName, Path downloadDir, Path uploadDir, Path temporaryDir, Logger logger) {
+        this(remoteService, clientName, downloadDir, uploadDir, temporaryDir, null, logger);
     }
 
     /**
