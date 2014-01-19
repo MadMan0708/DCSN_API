@@ -217,7 +217,7 @@ public class RemoteProvider {
             int time = Integer.parseInt(JarAPI.getAttributeFromManifest(projectJar, "Time-Per-Task"));
 
             if (!isProjectExists(projectName)) {
-                IUpDown uploader = new Uploader(remoteService, projectJar, projectData, clientName, projectName, priority, cores, memory, time);
+                IUpDown uploader = new Uploader(remoteService, projectJar, projectData,temporaryDir, clientName, projectName, priority, cores, memory, time);
                 Future<?> f = executor.submit(uploader);
                 return new ProgressChecker(f, uploader);
             } else {

@@ -10,6 +10,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cojen.dirmi.Pipe;
 
@@ -19,10 +20,11 @@ import org.cojen.dirmi.Pipe;
  * @author Jakub Hava
  */
 public class Uploader implements IUpDown {
-    
+
     private IServer remoteService;
     private Path projectJar;
     private Path projectData;
+    private Path temporaryDir;
     private int uploadProgress;
     private long bytesReaded;
     private String clientName;
@@ -39,6 +41,7 @@ public class Uploader implements IUpDown {
      * @param remoteService remote interface implementation
      * @param projectJar path to project jar
      * @param projectData path to project data
+     * @param temporaryDir path to temporary directory
      * @param clientName client's name
      * @param projectName project name
      * @param priority project priority
@@ -46,11 +49,12 @@ public class Uploader implements IUpDown {
      * @param memory amount of memory needed by task
      * @param time average time of task to be calculated
      */
-    public Uploader(IServer remoteService, Path projectJar, Path projectData,
+    public Uploader(IServer remoteService, Path projectJar, Path projectData, Path temporaryDir,
             String clientName, String projectName, int priority, int cores, int memory, int time) {
         this.remoteService = remoteService;
         this.projectJar = projectJar;
         this.projectData = projectData;
+        this.temporaryDir = temporaryDir;
         this.clientName = clientName;
         this.projectName = projectName;
         this.priority = priority;
@@ -60,14 +64,14 @@ public class Uploader implements IUpDown {
         this.uploadProgress = 0;
         this.bytesReaded = 0;
     }
-    
+
     private void prepareFileToUpload(File projectJar, File projectData, File tmp) throws IOException {
         CustomIO.zipFiles(tmp, new File[]{projectJar, projectData});
     }
-    
+
     @Override
     public Object call() throws Exception {
-        tmp = File.createTempFile(clientName, projectName + ".zip");
+        tmp = Files.createTempFile(temporaryDir, clientName, projectName + ".zip").toFile();
         CustomIO.recursiveDeleteOnShutdownHook(tmp.toPath());
         prepareFileToUpload(projectJar.toFile(), projectData.toFile(), tmp);
         long size = tmp.length();
@@ -86,12 +90,12 @@ public class Uploader implements IUpDown {
             throw new IOException("Problem during accessing project file: " + projectName);
         }
     }
-    
+
     @Override
     public int getProgress() {
         return this.uploadProgress;
     }
-    
+
     @Override
     public boolean isCompleted() {
         if (!tmp.exists()) {
@@ -99,6 +103,6 @@ public class Uploader implements IUpDown {
         } else {
             return bytesReaded == tmp.length();
         }
-        
+
     }
 }
