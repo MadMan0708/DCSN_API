@@ -4,7 +4,6 @@
  */
 package cz.cuni.mff.bc.api.main;
 
-import cz.cuni.mff.bc.api.enums.ProjectState;
 import java.io.Serializable;
 import java.util.Objects;
 

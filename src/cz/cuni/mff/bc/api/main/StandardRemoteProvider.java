@@ -6,7 +6,6 @@ package cz.cuni.mff.bc.api.main;
 
 import cz.cuni.mff.bc.api.enums.ProjectState;
 import cz.cuni.mff.bc.api.network.ProgressChecker;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.rmi.RemoteException;

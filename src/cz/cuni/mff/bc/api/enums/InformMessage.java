@@ -5,7 +5,7 @@
 package cz.cuni.mff.bc.api.enums;
 
 /**
- * Computation statuses
+ * Client's computation states
  *
  * @author Jakub Hava
  */

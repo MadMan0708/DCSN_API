@@ -8,6 +8,7 @@ import cz.cuni.mff.bc.api.enums.ProjectState;
 import java.io.Serializable;
 
 /**
+ * Contains information about project
  *
  * @author Jakub
  */

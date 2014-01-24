@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
+ * ID of a task
  *
  * @author Jakub Hava
  */
