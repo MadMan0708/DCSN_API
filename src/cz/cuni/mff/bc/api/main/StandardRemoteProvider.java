@@ -208,7 +208,7 @@ public class StandardRemoteProvider {
      */
     public Boolean resumeProject(String projectName) {
         try {
-            ProjectState state = remoteProvider.pauseProject(projectName);
+            ProjectState state = remoteProvider.resumeProject(projectName);
             if (state != null) {
                 switch (state) {
                     case ACTIVE:
