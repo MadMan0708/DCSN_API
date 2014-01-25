@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  * @author Jakub Hava
  */
 public class StandardRemoteProvider {
-
+    
     private static final Logger LOG = Logger.getLogger(StandardRemoteProvider.class.getName());
     private RemoteProvider remoteProvider;
 
@@ -384,25 +384,9 @@ public class StandardRemoteProvider {
      * @param projectData path to project data
      */
     public void uploadProject(Path projectJar, Path projectData) {
-        if (!CustomIO.isFileExist(projectJar, "jar")) {
-            LOG.log(Level.WARNING, "Project file does not exist");
-            return;
-        }
-        if (!CustomIO.isFileExist(projectData, "zip")) {
-            LOG.log(Level.WARNING, "Data file does not exist");
-            return;
-        }
-
-        if (!CustomIO.isJarValid(projectJar)) {
-            LOG.log(Level.WARNING, "Project file is not valid JAR file");
-            return;
-        }
-        if (!CustomIO.isZipValid(projectData)) {
-            LOG.log(Level.WARNING, "Data file is not valid ZIP file");
-            return;
-        }
-
         try {
+            CustomIO.projectJarExistsAndValid(projectJar);
+            CustomIO.projectDataExistsAndValid(projectData);
             JarTools.checkProjectParams(projectJar);
             final String projectName = JarTools.getAttributeFromManifest(projectJar, "Project-Name");
             final ProgressChecker pc = remoteProvider.uploadProject(projectJar, projectData);

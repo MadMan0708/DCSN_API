@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -26,6 +27,36 @@ import java.util.zip.ZipOutputStream;
  * @author Jakub Hava
  */
 public class CustomIO {
+
+    /**
+     * Checks if project jar file exist and if is valid jar file
+     *
+     * @param projectJar file to check
+     * @throws IOException
+     */
+    public static void projectJarExistsAndValid(Path projectJar) throws IOException {
+        if (!isFileExist(projectJar, "jar")) {
+            throw new IOException("File which contains project " + projectJar + " does not exist or does not have jar extension");
+        }
+        if (!isJarValid(projectJar)) {
+            throw new IOException("File which contains " + projectJar + " is not valid JAR file");
+        }
+    }
+
+    /**
+     * Checks if project data file exist and if is valid zip file
+     *
+     * @param projectData file to check
+     * @throws IOException
+     */
+    public static void projectDataExistsAndValid(Path projectData) throws IOException {
+        if (!isFileExist(projectData, "zip")) {
+            throw new IOException("File which contains data of the project " + projectData + " does not exist or does not have zip extension");
+        }
+        if (!isZipValid(projectData)) {
+            throw new IOException("File which contains data of the project " + projectData + " is not valid ZIP file");
+        }
+    }
 
     /**
      * Checks if the file exist with given extension
