@@ -4,12 +4,14 @@
  */
 package cz.cuni.mff.bc.api.enums;
 
+import java.io.Serializable;
+
 /**
  * Project states
  *
  * @author Jakub Hava
  */
-public enum ProjectState {
+public enum ProjectState implements Serializable {
 
     /**
      * Active project

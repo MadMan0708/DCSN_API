@@ -5,6 +5,7 @@
 package cz.cuni.mff.bc.api.main;
 
 import cz.cuni.mff.bc.api.enums.InformMessage;
+import cz.cuni.mff.bc.api.enums.ProjectState;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -168,10 +169,11 @@ public interface IServer extends Remote {
      *
      * @param clientName client's name
      * @param projectName project name
-     * @return true if the project was paused, false otherwise
+     * @return State of the project before pausing. Project has been paused only
+     * if the previous project state was set to ACTIVE
      * @throws RemoteException
      */
-    public boolean pauseProject(String clientName, String projectName) throws RemoteException;
+    public ProjectState pauseProject(String clientName, String projectName) throws RemoteException;
 
     /**
      * Cancels the project
@@ -188,10 +190,11 @@ public interface IServer extends Remote {
      *
      * @param clientName client's name
      * @param projectName project name
-     * @return true if the project was resumed, false otherwise
+     * @return State of the project before resuming. Project has been resumed
+     * only if the previous project state was set to PAUSED
      * @throws RemoteException
      */
-    public boolean resumeProject(String clientName, String projectName) throws RemoteException;
+    public ProjectState resumeProject(String clientName, String projectName) throws RemoteException;
 
     /**
      * Checks if the client is connected

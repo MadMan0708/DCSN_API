@@ -246,31 +246,26 @@ public class RemoteProvider {
     /**
      *
      * @param projectName project name
-     * @return true if the project has been paused, false if the project doesn't
-     * exist
+     * @return Null if the project doesn't exist on the server or project state
+     * before pausing. Project has been paused only if the previous project
+     * state was set to ACTIVE
      * @throws RemoteException
      */
-    public boolean pauseProject(String projectName) throws RemoteException {
-        if (remoteService.pauseProject(clientName, projectName)) {
-            return true;
-        } else {
-            return false;
-        }
+    public ProjectState pauseProject(String projectName) throws RemoteException {
+        return remoteService.pauseProject(clientName, projectName);
+
     }
 
     /**
      *
      * @param projectName project name
-     * @return true if the project has been resumed, false if the project
-     * doesn't exist
+     * @return Null if the project doesn't exist on the server or project state
+     * before resuming. Project has been resumed only if the previous project
+     * state was set to PAUSED
      * @throws RemoteException
      */
-    public boolean resumeProject(String projectName) throws RemoteException {
-        if (remoteService.resumeProject(clientName, projectName)) {
-            return true;
-        } else {
-            return false;
-        }
+    public ProjectState resumeProject(String projectName) throws RemoteException {
+        return remoteService.resumeProject(clientName, projectName);
     }
 
     /**

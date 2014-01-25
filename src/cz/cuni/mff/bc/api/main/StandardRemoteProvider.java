@@ -5,6 +5,12 @@
 package cz.cuni.mff.bc.api.main;
 
 import cz.cuni.mff.bc.api.enums.ProjectState;
+import static cz.cuni.mff.bc.api.enums.ProjectState.ACTIVE;
+import static cz.cuni.mff.bc.api.enums.ProjectState.COMPLETED;
+import static cz.cuni.mff.bc.api.enums.ProjectState.CORRUPTED;
+import static cz.cuni.mff.bc.api.enums.ProjectState.PAUSED;
+import static cz.cuni.mff.bc.api.enums.ProjectState.PREPARING;
+import static cz.cuni.mff.bc.api.enums.ProjectState.READY_FOR_DOWNLOAD;
 import cz.cuni.mff.bc.api.network.ProgressChecker;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -144,7 +150,7 @@ public class StandardRemoteProvider {
             remoteProvider.setCoresLimit(cores);
             LOG.log(Level.INFO, "Cores limit {0} for tasks has been set on server", cores);
         } catch (RemoteException e) {
-            LOG.log(Level.WARNING, "Cores limit couldn't be set due to connection problem");
+            LOG.log(Level.WARNING, "Cores limit could not be set due to connection problem");
         }
     }
 
@@ -152,14 +158,36 @@ public class StandardRemoteProvider {
      * Tries to pause the project
      *
      * @param projectName project name
-     * @return true if the project has been paused, false if the project doesn't
-     * exist or exception has been thrown
+     * @return true if the project has been paused, false if the project hasn't
+     * been paused or if the project doesn't exist on the server and null if
+     * there has been problem during pausing the project
      */
     public Boolean pauseProject(String projectName) {
         try {
-            if (remoteProvider.pauseProject(projectName)) {
-                LOG.log(Level.INFO, "Project {0} was successfuly paused", projectName);
-                return true;
+            ProjectState state = remoteProvider.pauseProject(projectName);
+            if (state != null) {
+                switch (state) {
+                    case ACTIVE:
+                        LOG.log(Level.INFO, "Project {0} has been successfuly paused", projectName);
+                        return true;
+                    case COMPLETED:
+                        LOG.log(Level.INFO, "Project {0} cannot be resumed because it is beeing prepared for download", projectName);
+                        return false;
+                    case CORRUPTED:
+                        LOG.log(Level.INFO, "Project {0} is corruted, cancel it please", projectName);
+                        return false;
+                    case PAUSED:
+                        LOG.log(Level.INFO, "Project {0} is already paused", projectName);
+                        return false;
+                    case PREPARING:
+                        LOG.log(Level.INFO, "Project {0} cannot be paused because it is beeing uploaded to the server", projectName);
+                        return false;
+                    case READY_FOR_DOWNLOAD:
+                        LOG.log(Level.INFO, "Project {0} is ready for download", projectName);
+                        return false;
+                    default:
+                        return false;
+                }
             } else {
                 LOG.log(Level.INFO, "No such project: {0}", projectName);
                 return false;
@@ -174,20 +202,42 @@ public class StandardRemoteProvider {
      * Tries to resume the project
      *
      * @param projectName project name
-     * @return true if the project has been resumed, false if the project
-     * doesn't exist or exception has been thrown
+     * @return true if the project has been resumed, false if the project hasn't
+     * been resumed or if the project doesn't exist on the server and null if
+     * there has been problem during resuming the project
      */
     public Boolean resumeProject(String projectName) {
         try {
-            if (remoteProvider.resumeProject(projectName)) {
-                LOG.log(Level.INFO, "Project {0} was successfuly unpaused", projectName);
-                return true;
+            ProjectState state = remoteProvider.pauseProject(projectName);
+            if (state != null) {
+                switch (state) {
+                    case ACTIVE:
+                        LOG.log(Level.INFO, "Project {0} is already active", projectName);
+                        return true;
+                    case COMPLETED:
+                        LOG.log(Level.INFO, "Project {0} cannot be resumed because it is beeing prepared for download", projectName);
+                        return false;
+                    case CORRUPTED:
+                        LOG.log(Level.INFO, "Project {0} is corruted, cancel it please", projectName);
+                        return false;
+                    case PAUSED:
+                        LOG.log(Level.INFO, "Project {0} has been successfully resumed", projectName);
+                        return false;
+                    case PREPARING:
+                        LOG.log(Level.INFO, "Project {0} cannot be paused because it is beeing uploaded to the server", projectName);
+                        return false;
+                    case READY_FOR_DOWNLOAD:
+                        LOG.log(Level.INFO, "Project {0} is ready for download", projectName);
+                        return false;
+                    default:
+                        return false;
+                }
             } else {
                 LOG.log(Level.INFO, "No such project: {0}", projectName);
                 return false;
             }
         } catch (RemoteException e) {
-            LOG.log(Level.WARNING, "Problem during unpausing project due to network erorr: {0}", e.getMessage());
+            LOG.log(Level.WARNING, "Problem during resuming project due to network erorr: {0}", e.getMessage());
             return null;
         }
     }
@@ -258,15 +308,20 @@ public class StandardRemoteProvider {
      *
      * @param projectName project name
      * @return true if the project is ready for download, false if the project
-     * is not ready for download or exception has been thrown
+     * is not ready for download, doesn't exist or exception has been thrown
      */
     public Boolean isProjectReadyForDownload(String projectName) {
         try {
-            if (remoteProvider.isProjectReadyForDownload(projectName)) {
-                LOG.log(Level.INFO, "Project {0} is ready for download", projectName);
-                return true;
+            if (remoteProvider.isProjectExists(projectName)) {
+                if (remoteProvider.isProjectReadyForDownload(projectName)) {
+                    LOG.log(Level.INFO, "Project {0} is ready for download", projectName);
+                    return true;
+                } else {
+                    LOG.log(Level.INFO, "Project {0} is not ready for download", projectName);
+                    return false;
+                }
             } else {
-                LOG.log(Level.INFO, "Project {0} is not ready for download", projectName);
+                LOG.log(Level.INFO, "No such project: {0}", projectName);
                 return false;
             }
         } catch (RemoteException e) {
@@ -283,34 +338,38 @@ public class StandardRemoteProvider {
      */
     public void download(String projectName, Path destination) {
         try {
-            final String projectNameLocal = projectName;
-            final ProgressChecker pc = remoteProvider.downloadProject(projectName, destination);
-            if (pc != null) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        LOG.log(Level.INFO, "Project: {0}, Downloaded: 0 %...", projectNameLocal);
-                        while (pc.isInProgress()) {
-                            LOG.log(Level.INFO, "Project: {0}, Downloaded: {1} %...", new Object[]{projectNameLocal, pc.getProgress()});
+            if (remoteProvider.isProjectExists(projectName)) {
+                final String projectNameLocal = projectName;
+                final ProgressChecker pc = remoteProvider.downloadProject(projectName, destination);
+                if (pc != null) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            LOG.log(Level.INFO, "Project: {0}, Downloaded: 0 %...", projectNameLocal);
+                            while (pc.isInProgress()) {
+                                LOG.log(Level.INFO, "Project: {0}, Downloaded: {1} %...", new Object[]{projectNameLocal, pc.getProgress()});
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    LOG.log(Level.INFO, "Progress checking during downloading has been interupted: {0}", e.getMessage());
+                                }
+                            }
                             try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                LOG.log(Level.INFO, "Progress checking during downloading has been interupted: {0}", e.getMessage());
+                                pc.wasSuccesful();
+                                LOG.log(Level.INFO, "Project: {0}, Downloaded: 100 %...", projectNameLocal);
+                                LOG.log(Level.INFO, "Project {0} has been downloaded", projectNameLocal);
+                            } catch (RemoteException e) {
+                                LOG.log(Level.WARNING, "Problem with network during downloading: {0}", e.getMessage());
+                            } catch (IOException e) {
+                                LOG.log(Level.WARNING, "Problem with accessing file on server side: {0}", e.getMessage());
                             }
                         }
-                        try {
-                            pc.wasSuccesful();
-                            LOG.log(Level.INFO, "Project: {0}, Downloaded: 100 %...", projectNameLocal);
-                            LOG.log(Level.INFO, "Project {0} has been downloaded", projectNameLocal);
-                        } catch (RemoteException e) {
-                            LOG.log(Level.WARNING, "Problem with network during downloading: {0}", e.getMessage());
-                        } catch (IOException e) {
-                            LOG.log(Level.WARNING, "Problem with accessing file on server side: {0}", e.getMessage());
-                        }
-                    }
-                }).start();
+                    }).start();
+                } else {
+                    LOG.log(Level.WARNING, "Project {0} is not ready for download", projectName);
+                }
             } else {
-                LOG.log(Level.WARNING, "Project {0} is not ready for download", projectName);
+                LOG.log(Level.INFO, "No such project: {0}", projectName);
             }
         } catch (RemoteException e) {
             LOG.log(Level.WARNING, "Problem with network during downloading: {0}", e.getMessage());
