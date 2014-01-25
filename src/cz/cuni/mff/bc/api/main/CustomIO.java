@@ -27,17 +27,41 @@ import java.util.zip.ZipOutputStream;
  */
 public class CustomIO {
 
-    
+    /**
+     * Checks if the file exist with given extension
+     *
+     * @param file file to check
+     * @param extension extension which file has to have
+     * @return true if file exist, otherwise false
+     */
+    public static boolean isFileExist(Path file, String extension) {
+        if (file.toFile().isFile() && getExtension(file.toFile()).equals(extension)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Checks if the jar file is valid
+     *
+     * @param file jar file to be checked
+     * @return true if jar is valid, false otherwise
+     */
+    public static boolean isJarValid(Path file) {
+        return isZipValid(file);
+    }
+
     /**
      * Checks if the zip file is valid
      *
      * @param file zip file to be checked
      * @return true if zip is valid, false otherwise
      */
-    public static boolean isZipValid(final File file) {
+    public static boolean isZipValid(Path file) {
         ZipFile zipfile = null;
         try {
-            zipfile = new ZipFile(file);
+            zipfile = new ZipFile(file.toFile());
             return true;
         } catch (ZipException e) {
             return false;
@@ -56,7 +80,7 @@ public class CustomIO {
     /**
      * Gets the extension of the file
      *
-     * @param file
+     * @param file file
      * @return extension of the file
      */
     public static String getExtension(File file) {

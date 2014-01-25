@@ -27,21 +27,6 @@ import java.util.jar.Manifest;
  */
 public class JarTools {
 
-    public static boolean isJarProjectValid(Path projectJar) throws IOException {
-        if (!projectJar.toFile().isFile() || !CustomIO.getExtension(projectJar.toFile()).equals("jar")) {
-            throw new IOException("Project jar file doesn't exist on given path");
-        }
-        try {
-            JarFile jar = new JarFile(projectJar.toFile());
-            if (jar.getManifest() == null) {
-            }
-
-        } catch (IOException e) {
-            throw new IOException("Project file is not correct jar file");
-        }
-        return true;
-    }
-
     /**
      * Checks if project contains commander class
      *

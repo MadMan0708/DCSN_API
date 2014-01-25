@@ -384,12 +384,21 @@ public class StandardRemoteProvider {
      * @param projectData path to project data
      */
     public void uploadProject(Path projectJar, Path projectData) {
-        if (!CustomIO.getExtension(projectData.toFile()).equals("zip")) {
-            LOG.log(Level.WARNING, "Data archive has to have format: *.zip");
+        if (!CustomIO.isFileExist(projectJar, "jar")) {
+            LOG.log(Level.WARNING, "Project file does not exist");
             return;
         }
-        if (!CustomIO.isZipValid(projectData.toFile())) {
-            LOG.log(Level.WARNING, "Zip file is corrupted");
+        if (!CustomIO.isFileExist(projectData, "zip")) {
+            LOG.log(Level.WARNING, "Data file does not exist");
+            return;
+        }
+
+        if (!CustomIO.isJarValid(projectJar)) {
+            LOG.log(Level.WARNING, "Project file is not valid JAR file");
+            return;
+        }
+        if (!CustomIO.isZipValid(projectData)) {
+            LOG.log(Level.WARNING, "Data file is not valid ZIP file");
             return;
         }
 
