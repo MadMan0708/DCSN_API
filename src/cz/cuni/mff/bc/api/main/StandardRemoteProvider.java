@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  * @author Jakub Hava
  */
 public class StandardRemoteProvider {
-    
+
     private static final Logger LOG = Logger.getLogger(StandardRemoteProvider.class.getName());
     private RemoteProvider remoteProvider;
 
@@ -133,9 +133,9 @@ public class StandardRemoteProvider {
     public void setMemoryLimit(int memory) {
         try {
             remoteProvider.setMemoryLimit(memory);
-            LOG.log(Level.INFO, "Memory limit {0}m for tasks has been set on server", memory);
+            LOG.log(Level.FINE, "Memory limit {0}m for tasks has been set on server", memory);
         } catch (RemoteException e) {
-            LOG.log(Level.WARNING, "Memory limit couldn't be set due to connection problem");
+            LOG.log(Level.FINE, "Memory limit couldn't be set due to connection problem");
         }
     }
 
@@ -148,9 +148,9 @@ public class StandardRemoteProvider {
     public void setCoresLimit(int cores) {
         try {
             remoteProvider.setCoresLimit(cores);
-            LOG.log(Level.INFO, "Cores limit {0} for tasks has been set on server", cores);
+            LOG.log(Level.FINE, "Cores limit {0} for tasks has been set on server", cores);
         } catch (RemoteException e) {
-            LOG.log(Level.WARNING, "Cores limit could not be set due to connection problem");
+            LOG.log(Level.FINE, "Cores limit could not be set due to connection problem");
         }
     }
 
@@ -345,18 +345,19 @@ public class StandardRemoteProvider {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            LOG.log(Level.INFO, "Project: {0}, Downloaded: 0 %...", projectNameLocal);
+                            LOG.log(Level.INFO, "Project: {0}, Downloading started", projectNameLocal);
+                            LOG.log(Level.FINE, "Project: {0}, Downloaded: 0 %...", projectNameLocal);
                             while (pc.isInProgress()) {
-                                LOG.log(Level.INFO, "Project: {0}, Downloaded: {1} %...", new Object[]{projectNameLocal, pc.getProgress()});
+                                LOG.log(Level.FINE, "Project: {0}, Downloaded: {1} %...", new Object[]{projectNameLocal, pc.getProgress()});
                                 try {
                                     Thread.sleep(1000);
                                 } catch (InterruptedException e) {
-                                    LOG.log(Level.INFO, "Progress checking during downloading has been interupted: {0}", e.getMessage());
+                                    LOG.log(Level.FINE, "Progress checking during downloading has been interupted: {0}", e.getMessage());
                                 }
                             }
                             try {
                                 pc.wasSuccesful();
-                                LOG.log(Level.INFO, "Project: {0}, Downloaded: 100 %...", projectNameLocal);
+                                LOG.log(Level.FINE, "Project: {0}, Downloaded: 100 %...", projectNameLocal);
                                 LOG.log(Level.INFO, "Project {0} has been downloaded", projectNameLocal);
                             } catch (RemoteException e) {
                                 LOG.log(Level.WARNING, "Problem with network during downloading: {0}", e.getMessage());
@@ -394,18 +395,19 @@ public class StandardRemoteProvider {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        LOG.log(Level.INFO, "Project: {0}, Uploaded: 0 %...", projectName);
+                        LOG.log(Level.INFO, "Project: {0}, Uploadeding started", projectName);
+                        LOG.log(Level.FINE, "Project: {0}, Uploaded: 0 %...", projectName);
                         while (pc.isInProgress()) {
-                            LOG.log(Level.INFO, "Project: {0}, Uploaded: {1} %...", new Object[]{projectName, pc.getProgress()});
+                            LOG.log(Level.FINE, "Project: {0}, Uploaded: {1} %...", new Object[]{projectName, pc.getProgress()});
                             try {
                                 Thread.sleep(800);
                             } catch (InterruptedException e) {
-                                LOG.log(Level.INFO, "Progress checking during uploading has been interupted: {0}", e.getMessage());
+                                LOG.log(Level.FINE, "Progress checking during uploading has been interupted: {0}", e.getMessage());
                             }
                         }
                         try {
                             pc.wasSuccesful();
-                            LOG.log(Level.INFO, "Project: {0}, Uploaded: 100 %...", projectName);
+                            LOG.log(Level.FINE, "Project: {0}, Uploaded: 100 %...", projectName);
                             LOG.log(Level.INFO, "Project {0} has been uploaded", projectName);
                         } catch (IOException e) {
                             LOG.log(Level.WARNING, "Problem with accessing file: {0}", e.getMessage());
