@@ -210,11 +210,11 @@ public class RemoteProvider {
      */
     public ProgressChecker uploadProject(Path projectJar, Path projectData) throws RemoteException, IOException {
         try {
-            String projectName = JarAPI.getAttributeFromManifest(projectJar, "Project-Name");
-            int priority = Integer.parseInt(JarAPI.getAttributeFromManifest(projectJar, "Project-Priority"));
-            int cores = Integer.parseInt(JarAPI.getAttributeFromManifest(projectJar, "Cores-Per-Task"));
-            int memory = Integer.parseInt(JarAPI.getAttributeFromManifest(projectJar, "Memory-Per-Task"));
-            int time = Integer.parseInt(JarAPI.getAttributeFromManifest(projectJar, "Time-Per-Task"));
+            String projectName = JarTools.getAttributeFromManifest(projectJar, "Project-Name");
+            int priority = Integer.parseInt(JarTools.getAttributeFromManifest(projectJar, "Project-Priority"));
+            int cores = Integer.parseInt(JarTools.getAttributeFromManifest(projectJar, "Cores-Per-Task"));
+            int memory = Integer.parseInt(JarTools.getAttributeFromManifest(projectJar, "Memory-Per-Task"));
+            int time = Integer.parseInt(JarTools.getAttributeFromManifest(projectJar, "Time-Per-Task"));
 
             if (!isProjectExists(projectName)) {
                 IUpDown uploader = new Uploader(remoteService, projectJar, projectData, temporaryDir, clientName, projectName, priority, cores, memory, time);

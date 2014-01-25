@@ -377,60 +377,6 @@ public class StandardRemoteProvider {
     }
 
     /**
-     * Checks project parameters in project jar file
-     *
-     * @param projectJar project jar
-     * @return true if parameters are correct, false otherwise
-     * @throws IOException
-     */
-    public boolean checkProjectParams(Path projectJar) throws IOException {
-        boolean ok = true;
-        try {
-            int projectPriority = Integer.parseInt(JarAPI.getAttributeFromManifest(projectJar, "Project-Priority"));
-            if (projectPriority <= 0 || projectPriority > 10) {
-                LOG.log(Level.WARNING, "Project priority range is from 1 to 10");
-                ok = false;
-            }
-        } catch (NumberFormatException e) {
-            LOG.log(Level.WARNING, "Project priority has to be integer in range from 1 to 10");
-            ok = false;
-        }
-        try {
-            int memory = Integer.parseInt(JarAPI.getAttributeFromManifest(projectJar, "Memory-Per-Task"));
-            if (memory <= 0) {
-                LOG.log(Level.WARNING, "Memory limit has to be bigger then 0 megabytes");
-                ok = false;
-            }
-        } catch (NumberFormatException e) {
-            LOG.log(Level.WARNING, "Memory limit has to be integer bigger then 0");
-            ok = false;
-        }
-
-        try {
-            int cores = Integer.parseInt(JarAPI.getAttributeFromManifest(projectJar, "Cores-Per-Task"));
-            if (cores <= 0) {
-                LOG.log(Level.WARNING, "Cores limit has to be bigger then 0 ");
-                ok = false;
-            }
-        } catch (NumberFormatException e) {
-            LOG.log(Level.WARNING, "Cores limit has to be integer bigger then 0");
-            ok = false;
-        }
-
-        try {
-            int time = Integer.parseInt(JarAPI.getAttributeFromManifest(projectJar, "Time-Per-Task"));
-            if (time <= 0) {
-                LOG.log(Level.WARNING, "Time has to be bigger then 0");
-                ok = false;
-            }
-        } catch (NumberFormatException e) {
-            LOG.log(Level.WARNING, "Time  has to be integer bigger then 0");
-            ok = false;
-        }
-        return ok;
-    }
-
-    /**
      *
      * Uploads the project with progress logging and exception handling
      *
@@ -439,7 +385,7 @@ public class StandardRemoteProvider {
      */
     public void uploadProject(Path projectJar, Path projectData) {
         if (!CustomIO.getExtension(projectData.toFile()).equals("zip")) {
-            LOG.log(Level.WARNING, "Possible archive for data files is only *.zip");
+            LOG.log(Level.WARNING, "Data archive has to have format: *.zip");
             return;
         }
         if (!CustomIO.isZipValid(projectData.toFile())) {
@@ -448,10 +394,8 @@ public class StandardRemoteProvider {
         }
 
         try {
-            if (!checkProjectParams(projectJar)) {
-                return;
-            }
-            final String projectName = JarAPI.getAttributeFromManifest(projectJar, "Project-Name");
+            JarTools.checkProjectParams(projectJar);
+            final String projectName = JarTools.getAttributeFromManifest(projectJar, "Project-Name");
             final ProgressChecker pc = remoteProvider.uploadProject(projectJar, projectData);
             if (pc != null) {
                 new Thread(new Runnable() {
@@ -479,9 +423,11 @@ public class StandardRemoteProvider {
                 LOG.log(Level.INFO, "Project with name {0} already exists", projectName);
             }
         } catch (RemoteException e) {
-            LOG.log(Level.WARNING, "Problem with network during uploading: {0}", e.getMessage());
+            LOG.log(Level.WARNING, "Problem with the network during uploading: {0}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            LOG.log(Level.WARNING, "{0}", e.getMessage());
         } catch (IOException e) {
-            LOG.log(Level.WARNING, "Jar file {0} couldn't be accessed or is not correct project", projectJar.getFileName());
+            LOG.log(Level.WARNING, "{0}", e.getMessage());
         }
     }
 

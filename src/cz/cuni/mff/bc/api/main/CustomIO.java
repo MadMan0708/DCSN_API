@@ -27,6 +27,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class CustomIO {
 
+    
     /**
      * Checks if the zip file is valid
      *
@@ -46,7 +47,6 @@ public class CustomIO {
             try {
                 if (zipfile != null) {
                     zipfile.close();
-                    zipfile = null;
                 }
             } catch (IOException e) {
             }
