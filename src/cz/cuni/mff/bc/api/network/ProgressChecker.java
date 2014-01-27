@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Logger;
 
 /**
  * Class used to check the progress of any class which implements IUpDown
@@ -46,6 +47,15 @@ public class ProgressChecker {
     }
 
     /**
+     * Tests if uploading or downloading has started
+     *
+     * @return true if uploading or downloading has started, false otherwise
+     */
+    public boolean hasStarted() {
+        return upDown.hasStarted();
+    }
+
+    /**
      * Gets the progress
      *
      * @return percentage of the progress
@@ -61,7 +71,7 @@ public class ProgressChecker {
      * @throws IOException
      */
     public boolean wasSuccesful() throws RemoteException, IOException {
-        if (upDown.isCompleted()) {
+        if (upDown.hasCompleted()) {
             return true;
         } else {
             try {

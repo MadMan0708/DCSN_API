@@ -20,6 +20,7 @@ import org.cojen.dirmi.Pipe;
  */
 public class Downloader implements IUpDown {
 
+    private boolean hasStarted = false;
     private IServer remoteService;
     private int downloadProgress;
     private long bytesReaded;
@@ -57,6 +58,7 @@ public class Downloader implements IUpDown {
 
             int n;
             byte[] buffer = new byte[8192];
+            hasStarted = true;
             while ((n = pipe.read(buffer)) > -1) {
                 out.write(buffer, 0, n);
                 bytesReaded = bytesReaded + n;
@@ -76,7 +78,13 @@ public class Downloader implements IUpDown {
     }
 
     @Override
-    public boolean isCompleted() {
+    public boolean hasStarted() {
+        return hasStarted;
+
+    }
+
+    @Override
+    public boolean hasCompleted() {
         return bytesReaded == downloadFile.length();
     }
 }

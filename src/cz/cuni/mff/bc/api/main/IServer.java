@@ -41,7 +41,7 @@ public interface IServer extends Remote {
      * Gets task from the server
      *
      * @param clientName client's name
-     * @param projectUID project unique id which tells from which project will
+     * @param projectUID project unique ID which tells from which project will
      * be the task downloaded
      * @return the task
      * @throws RemoteException
@@ -68,7 +68,7 @@ public interface IServer extends Remote {
     public boolean isProjectExists(String clientName, String projectName) throws RemoteException;
 
     /**
-     * Checks if the client has tasks in progress
+     * Checks if the client has some tasks in progress
      *
      * @param clientName client's name
      * @return true if client has some tasks in progress, false otherwise
@@ -105,9 +105,9 @@ public interface IServer extends Remote {
     public Pipe downloadProject(String clientName, String projectName, Pipe pipe) throws RemoteException;
 
     /**
-     * Downloads only the project jar
+     * Downloads the project jar only
      *
-     * @param projectUID unique id of the project
+     * @param projectUID unique ID of the project
      * @param pipe pipe used to transfer the data files
      * @return pipe for the other side of the connection
      * @throws RemoteException
@@ -136,8 +136,8 @@ public interface IServer extends Remote {
     public long getProjectFileSize(String clientName, String projectName) throws RemoteException;
 
     /**
-     * Gets the unique id of project which task will be calculated and
-     * associated by the client
+     * Gets the unique ID of project which task will be calculated and
+     * associated with the client
      *
      * @param clientName client's name
      * @return project unique id
@@ -180,10 +180,11 @@ public interface IServer extends Remote {
      *
      * @param clientName client's name
      * @param projectName project name
-     * @return true if the project was cancelled, false otherwise
+     * @return true if project has been successfully cancelled, false if the
+     * project is in preparing phase or null if the project doesn't exist
      * @throws RemoteException
      */
-    public boolean cancelProject(String clientName, String projectName) throws RemoteException;
+    public Boolean cancelProject(String clientName, String projectName) throws RemoteException;
 
     /**
      * Resumes the project
@@ -207,7 +208,7 @@ public interface IServer extends Remote {
 
     /**
      * Sends to the server the list of task currently calculated tasks. If for
-     * any reason some tasks are already finished, the unique id of those task
+     * any reason some tasks are already finished, the unique ID of those task
      * is sent back to the client
      *
      * @param clientName client's name
@@ -218,8 +219,8 @@ public interface IServer extends Remote {
     public ArrayList<TaskID> sendTasksInCalculation(String clientName, ArrayList<TaskID> tasksInCalculation) throws RemoteException;
 
     /**
-     * Unassociate task from given client's and puts it again back to the tasks
-     * pool
+     * Unassociates the task from client and puts it again back to the tasks
+     * pool on the server
      *
      * @param clientName client's name
      * @param taskToCancel task to cancel

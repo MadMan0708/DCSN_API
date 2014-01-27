@@ -22,7 +22,7 @@ public enum ProjectState implements Serializable {
      */
     PAUSED,
     /**
-     * Completed project, packing is not completed
+     * Completed project but not packed yet
      */
     COMPLETED,
     /**
@@ -30,7 +30,7 @@ public enum ProjectState implements Serializable {
      */
     READY_FOR_DOWNLOAD,
     /**
-     * Project is preparing for the calculation
+     * Project is being prepared for the calculation
      */
     PREPARING,
     /**

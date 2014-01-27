@@ -28,10 +28,12 @@ import java.util.logging.Logger;
  */
 public class StandardRemoteProvider {
 
+    private static int timeout = 5000;
     private static final Logger LOG = Logger.getLogger(StandardRemoteProvider.class.getName());
     private RemoteProvider remoteProvider;
 
     /**
+     * Constructor
      *
      * @param remoteService remote interface
      * @param clientName client name
@@ -47,6 +49,7 @@ public class StandardRemoteProvider {
     }
 
     /**
+     * Constructor
      *
      * @param remoteService remote interface
      * @param clientName client name
@@ -60,38 +63,43 @@ public class StandardRemoteProvider {
     }
 
     /**
+     * Gets the path to the temporary directory which has been set in console
      *
-     * @return temporary directory which has been set in console
+     * @return path to the temporary directory
      */
     public Path getStandartTemporaryDir() {
         return remoteProvider.getStandartTemporaryDir();
     }
 
     /**
+     * Gets the path to the download directory which has been set in console
      *
-     * @return download directory which has been set in console
+     * @return path to the download directory
      */
     public Path getStandartDownloadDir() {
         return remoteProvider.getStandartDownloadDir();
     }
 
     /**
+     * Gets the path to the upload directory which has been set in console
      *
-     * @return upload directory which has been set in console
+     * @return path to the upload directory
      */
     public Path getStandartUploadDir() {
         return remoteProvider.getStandartUploadDir();
     }
 
     /**
+     * Gets the path to the current project jar
      *
-     * @return path to the project jar
+     * @return path to current project jar
      */
     public Path getCurrentJarPath() {
         return remoteProvider.getCurrentJarPath();
     }
 
     /**
+     * Gets the basic remote provider
      *
      * @return basic remote provider
      */
@@ -100,14 +108,16 @@ public class StandardRemoteProvider {
     }
 
     /**
+     * Gets the client's name
      *
-     * @return client name
+     * @return client's name
      */
     public String getClientName() {
         return remoteProvider.getClientName();
     }
 
     /**
+     * Gets the logger
      *
      * @return logger
      */
@@ -116,19 +126,19 @@ public class StandardRemoteProvider {
     }
 
     /**
-     * Test if client is connected on the server
+     * Checks if the client is connected
      *
-     * @return true if client is connected, false otherwise
+     * @return true if the client is connected, false otherwise
      */
     public boolean isConnected() {
         return remoteProvider.isConnected();
     }
 
     /**
-     * Sends to server information about memory limit which can tasks use during
-     * computation
+     * Sends to the server information about amount of memory which can be used
+     * during task computation
      *
-     * @param memory
+     * @param memory memory limit
      */
     public void setMemoryLimit(int memory) {
         try {
@@ -140,10 +150,10 @@ public class StandardRemoteProvider {
     }
 
     /**
-     * Sends to server information about number of cores which can be used to
-     * task computation
+     * Sends to server information about number of cores which can be used
+     * during task computation
      *
-     * @param cores
+     * @param cores cores limit
      */
     public void setCoresLimit(int cores) {
         try {
@@ -264,13 +274,18 @@ public class StandardRemoteProvider {
      * Tries to cancel the project
      *
      * @param projectName project name
-     * @return true if the project has been cancelled, false if the project
-     * doesn't exist or exception has been thrown
+     * @return true if the project has been cancelled, false if the project is
+     * in preparing phase or doesn't exist and null if there has been problem
+     * during cancelling the project
      */
     public Boolean cancelProject(String projectName) {
         try {
-            if (remoteProvider.cancelProject(projectName)) {
+            Boolean canceled = remoteProvider.cancelProject(projectName);
+            if (canceled == true) {
                 LOG.log(Level.INFO, "Project {0} was successfuly canceled", projectName);
+                return true;
+            } else if (canceled == false) {
+                LOG.log(Level.INFO, "Project {0} can be canceled during preparation on the server", projectName);
                 return false;
             } else {
                 LOG.log(Level.INFO, "No such project: {0}", projectName);
@@ -283,9 +298,9 @@ public class StandardRemoteProvider {
     }
 
     /**
-     * Check if client has tasks in progress
+     * Check if the client has some tasks in progress
      *
-     * @return true if client has tasks in progress, false otherwise
+     * @return true if the client has tasks in progress, false otherwise
      */
     public Boolean hasClientTasksInProgress() {
         try {
@@ -304,11 +319,12 @@ public class StandardRemoteProvider {
     }
 
     /**
-     * Tests if project is ready for download
+     * Tests if the project is ready for download
      *
      * @param projectName project name
      * @return true if the project is ready for download, false if the project
-     * is not ready for download, doesn't exist or exception has been thrown
+     * is not ready for download or doesn't exist and null if exception has been
+     * thrown
      */
     public Boolean isProjectReadyForDownload(String projectName) {
         try {
@@ -345,15 +361,19 @@ public class StandardRemoteProvider {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            LOG.log(Level.INFO, "Project: {0}, Downloading started", projectNameLocal);
-                            LOG.log(Level.FINE, "Project: {0}, Downloaded: 0 %...", projectNameLocal);
-                            while (pc.isInProgress()) {
-                                LOG.log(Level.FINE, "Project: {0}, Downloaded: {1} %...", new Object[]{projectNameLocal, pc.getProgress()});
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                    LOG.log(Level.FINE, "Progress checking during downloading has been interupted: {0}", e.getMessage());
+                            try {
+                                LOG.log(Level.INFO, "Project: {0}, Preparing files for download. Downloading will start immedeatelly after.", projectNameLocal);
+                                while (!pc.hasStarted()) {
+                                    Thread.sleep(100);
                                 }
+                                LOG.log(Level.FINE, "Project: {0}, Downloading started", projectNameLocal);
+                                LOG.log(Level.FINE, "Project: {0}, Downloaded: 0 %...", projectNameLocal);
+                                while (pc.isInProgress()) {
+                                    Thread.sleep(timeout);
+                                    LOG.log(Level.FINE, "Project: {0}, Downloaded: {1} %...", new Object[]{projectNameLocal, pc.getProgress()});
+                                }
+                            } catch (InterruptedException e) {
+                                LOG.log(Level.FINE, "Progress checking during downloading has been interupted: {0}", e.getMessage());
                             }
                             try {
                                 pc.wasSuccesful();
@@ -395,15 +415,19 @@ public class StandardRemoteProvider {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        LOG.log(Level.INFO, "Project: {0}, Uploadeding started", projectName);
-                        LOG.log(Level.FINE, "Project: {0}, Uploaded: 0 %...", projectName);
-                        while (pc.isInProgress()) {
-                            LOG.log(Level.FINE, "Project: {0}, Uploaded: {1} %...", new Object[]{projectName, pc.getProgress()});
-                            try {
-                                Thread.sleep(800);
-                            } catch (InterruptedException e) {
-                                LOG.log(Level.FINE, "Progress checking during uploading has been interupted: {0}", e.getMessage());
+                        try {
+                            LOG.log(Level.INFO, "Project: {0}, Preparing files for upload. Uploading will start immedeatelly after.", projectName);
+                            while (!pc.hasStarted()) {
+                                Thread.sleep(100);
                             }
+                            LOG.log(Level.FINE, "Project: {0}, Uploading started", projectName);
+                            LOG.log(Level.FINE, "Project: {0}, Uploaded: 0 %...", projectName);
+                            while (pc.isInProgress()) {
+                                Thread.sleep(timeout);
+                                LOG.log(Level.FINE, "Project: {0}, Uploaded: {1} %...", new Object[]{projectName, pc.getProgress()});
+                            }
+                        } catch (InterruptedException e) {
+                            LOG.log(Level.FINE, "Progress checking during uploading has been interupted: {0}", e.getMessage());
                         }
                         try {
                             pc.wasSuccesful();
@@ -471,7 +495,7 @@ public class StandardRemoteProvider {
     }
 
     /**
-     * Prints basic information about client's projects with given state
+     * Prints basic information about client's projects in given state
      *
      * @param state state used to filter projects
      */

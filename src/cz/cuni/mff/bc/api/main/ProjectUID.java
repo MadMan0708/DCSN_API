@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Represents unique project id
+ * Represents unique project ID
  *
  * @author Jakub Hava
  */
@@ -37,6 +37,7 @@ public class ProjectUID implements Serializable {
     }
 
     /**
+     * Gets the project name
      *
      * @return project name
      */
@@ -45,6 +46,7 @@ public class ProjectUID implements Serializable {
     }
 
     /**
+     * Gets the clientName
      *
      * @return client's name
      */

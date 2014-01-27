@@ -30,7 +30,7 @@ public interface ITask extends Remote, Serializable {
     public void saveData(Path to);
 
     /**
-     * Method does the calculation on loaded data
+     * Does the calculation on loaded data
      */
     public void calculate();
 }

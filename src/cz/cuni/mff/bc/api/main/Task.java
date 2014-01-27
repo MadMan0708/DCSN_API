@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.nio.file.Path;
 
 /**
- * Class which represents a task
+ * Class representing task
  *
  * @author Jakub Hava
  */
@@ -38,7 +38,7 @@ public class Task implements Serializable {
     }
 
     /**
-     * Sets the class which is used to do computation
+     * Sets the class where the computation methods are defined by the client
      *
      * @param className name of the class
      * @throws IllegalAccessException
@@ -58,6 +58,7 @@ public class Task implements Serializable {
     }
 
     /**
+     * Gets the client's name
      *
      * @return client's name
      */
@@ -66,6 +67,7 @@ public class Task implements Serializable {
     }
 
     /**
+     * Gets the project name
      *
      * @return project name
      */
@@ -74,23 +76,25 @@ public class Task implements Serializable {
     }
 
     /**
+     * Gets the task unique ID
      *
-     * @return task unique id
+     * @return task unique ID
      */
     public TaskID getUnicateID() {
         return unicateTaskID;
     }
 
     /**
+     * Gets the unique OD of the project to which this task belong
      *
-     * @return unique id of project where this task belong to
+     * @return unique project ID
      */
     public ProjectUID getProjectUID() {
         return new ProjectUID(unicateTaskID.getClientName(), unicateTaskID.getProjectName());
     }
 
     /**
-     * Methods do the calculation on loaded data
+     * Does the calculation on loaded data
      */
     public void calculate() {
         computeTask.calculate();
@@ -116,6 +120,7 @@ public class Task implements Serializable {
     }
 
     /**
+     * Sets the task state
      *
      * @param state task state
      */
@@ -124,6 +129,7 @@ public class Task implements Serializable {
     }
 
     /**
+     * Gets the task state
      *
      * @return task state
      */
@@ -131,6 +137,9 @@ public class Task implements Serializable {
         return this.state;
     }
 
+    /*
+     * Method use for serializing
+     */
     private void writeObject(ObjectOutputStream os) throws Exception {
         os.writeObject(unicateTaskID);
         os.writeObject(computeTask);
@@ -138,6 +147,9 @@ public class Task implements Serializable {
         os.writeObject(dataHasBeenSaved);
     }
 
+    /*
+     * Method use for deserializing
+     */
     private void readObject(ObjectInputStream os) throws Exception {
         unicateTaskID = (TaskID) os.readObject();
         computeTask = (ITask) os.readObject();

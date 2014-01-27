@@ -28,10 +28,10 @@ import java.util.jar.Manifest;
 public class JarTools {
 
     /**
-     * Checks if project contains commander class
+     * Checks if the project contains commander class
      *
      * @param projectJar project jar
-     * @return true if project contains commander class, otherwise false
+     * @return true if the project contains commander class, otherwise false
      * @throws IllegalArgumentException
      * @throws IOException
      */
@@ -53,10 +53,11 @@ public class JarTools {
     }
 
     /**
-     * Checks if project contains main computation class
+     * Checks if the project contains main computation class
      *
      * @param projectJar project jar
-     * @return true if project contains main computation class, otherwise false
+     * @return true if the project contains main computation class, otherwise
+     * false
      * @throws IllegalArgumentException
      * @throws IOException
      */
@@ -78,10 +79,10 @@ public class JarTools {
     }
 
     /**
-     * Checks it project name is valid
+     * Checks if the project name is valid
      *
      * @param projectJar project jar
-     * @return true if project name is valid, otherwise false
+     * @return true if the project name is valid, otherwise false
      * @throws IllegalArgumentException
      * @throws IOException
      */
@@ -95,10 +96,10 @@ public class JarTools {
     }
 
     /**
-     * Checks if project priority is valid
+     * Checks if the project priority is valid
      *
      * @param projectJar project jar
-     * @return true if project priority is valid, otherwise false
+     * @return true if the project priority is valid, otherwise false
      * @throws IllegalArgumentException
      * @throws IOException
      *
@@ -122,10 +123,10 @@ public class JarTools {
     }
 
     /**
-     * Checks if project memory limit is valid
+     * Checks if the project memory limit is valid
      *
      * @param projectJar project jar
-     * @return true if project memory limit is valid, otherwise false
+     * @return true if the project memory limit is valid, otherwise false
      * @throws IllegalArgumentException
      * @throws IOException
      */
@@ -148,10 +149,10 @@ public class JarTools {
     }
 
     /**
-     * Checks if project cores limit is valid
+     * Checks if the project cores limit is valid
      *
      * @param projectJar project jar
-     * @return true if project cores limit is valid, otherwise false
+     * @return true if the project cores limit is valid, otherwise false
      * @throws IllegalArgumentException
      * @throws IOException
      */
@@ -175,10 +176,10 @@ public class JarTools {
     }
 
     /**
-     * Checks if project average time is valid
+     * Checks if the project average time is valid
      *
      * @param projectJar project jar
-     * @return true if project average time is valid, otherwise false
+     * @return true if the project average time is valid, otherwise false
      * @throws IllegalArgumentException
      * @throws IOException
      */
@@ -201,10 +202,10 @@ public class JarTools {
     }
 
     /**
-     * Checks project parameters in project file
+     * Checks the project parameters in project file
      *
      * @param projectJar project jar
-     * @return true if parameters are correct, false otherwise
+     * @return true if the parameters are correct, false otherwise
      * @throws IllegalArgumentException
      * @throws IOException
      */
@@ -218,7 +219,7 @@ public class JarTools {
     }
 
     /**
-     * Gets the value of attribute in jar manifest file
+     * Gets the value of attribute from jar manifest file
      *
      * @param projectJar path to the jar file
      * @param attrName attribute name
@@ -247,7 +248,7 @@ public class JarTools {
      * @param sourceJar path to the source jar
      * @param destinationjar path to the destination jar
      * @param attrName attribute name
-     * @param value attribute value
+     * @param value new attribute value
      * @throws FileNotFoundException
      * @throws IOException
      */

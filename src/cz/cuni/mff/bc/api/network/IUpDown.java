@@ -9,22 +9,30 @@ import java.util.concurrent.Callable;
 /**
  * Interface for download and upload classes
  *
- * @author Jakub
+ * @author Jakub Hava
  */
 public interface IUpDown extends Callable<Object> {
 
     /**
+     * Gets the progress of uploading or downloading in percents
      *
-     * @return percentage progress of uploading, downloading
+     * @return the progress of uploading or downloading in percents
      */
     public int getProgress();
 
     /**
-     * Tests if uploading, downloading work is completed
+     * Tests if uploading or downloading has finished
      *
-     * @return boolean if uploading or downloading is completed
+     * @return true if uploading or downloading has completed, false otherwise
      */
-    public boolean isCompleted();
+    public boolean hasCompleted();
+
+    /**
+     * Tests if uploading or downloading has started
+     *
+     * @return true if uploading or downloading has started, false otherwise
+     */
+    public boolean hasStarted();
 
     @Override
     public Object call() throws Exception;

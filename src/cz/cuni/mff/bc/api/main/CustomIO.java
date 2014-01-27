@@ -28,9 +28,9 @@ import java.util.zip.ZipOutputStream;
 public class CustomIO {
 
     /**
-     * Checks if project jar file exist and if is valid jar file
+     * Checks if the project jar file exists and if is valid jar file
      *
-     * @param projectJar file to check
+     * @param projectJar path to the file
      * @throws IOException
      */
     public static void projectJarExistsAndValid(Path projectJar) throws IOException {
@@ -43,9 +43,9 @@ public class CustomIO {
     }
 
     /**
-     * Checks if project data file exist and if is valid zip file
+     * Checks if the project data file exists and if is valid zip file
      *
-     * @param projectData file to check
+     * @param projectData path to the file
      * @throws IOException
      */
     public static void projectDataExistsAndValid(Path projectData) throws IOException {
@@ -58,11 +58,11 @@ public class CustomIO {
     }
 
     /**
-     * Checks if the file exist with given extension
+     * Checks if the file exists and has given extension
      *
-     * @param file file to check
+     * @param file path to the file
      * @param extension extension which file has to have
-     * @return true if file exist, otherwise false
+     * @return true if file exists, otherwise false
      */
     public static boolean isFileExist(Path file, String extension) {
         if (file.toFile().isFile() && getExtension(file.toFile()).equals(extension)) {
@@ -75,7 +75,7 @@ public class CustomIO {
     /**
      * Checks if the jar file is valid
      *
-     * @param file jar file to be checked
+     * @param file path to the jar file
      * @return true if jar is valid, false otherwise
      */
     public static boolean isJarValid(Path file) {
@@ -85,7 +85,7 @@ public class CustomIO {
     /**
      * Checks if the zip file is valid
      *
-     * @param file zip file to be checked
+     * @param file path to the zip file
      * @return true if zip is valid, false otherwise
      */
     public static boolean isZipValid(Path file) {
@@ -168,7 +168,7 @@ public class CustomIO {
     }
 
     /**
-     * Zips the file in array to one output zip
+     * Zips the files in array to one output zip file
      *
      * @param zip destination zip file
      * @param files array of files to be zipped
@@ -226,7 +226,7 @@ public class CustomIO {
     }
 
     /**
-     * Deletes files in the directory. It deletes only those files, which name
+     * Deletes files in the directory. It deletes only those files which name
      * matches the pattern
      *
      * @param dirWhere path to the directory to delete
@@ -249,8 +249,8 @@ public class CustomIO {
     }
 
     /**
-     * Deletes the directory and all its content recursively at closing the
-     * program
+     * Deletes the directory and all its content recursively at the program
+     * closing time
      *
      * @param path directory to delete
      */

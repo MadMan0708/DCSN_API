@@ -9,18 +9,23 @@ import cz.cuni.mff.bc.api.main.IServer;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.logging.Logger;
 import org.cojen.dirmi.Pipe;
 
 /**
- * Class used ti upload projects to the server
+ * Class used to upload projects to the server
  *
  * @author Jakub Hava
  */
 public class Uploader implements IUpDown {
 
+    private boolean hasStarted = false;
     private IServer remoteService;
     private Path projectJar;
     private Path projectData;
@@ -79,6 +84,7 @@ public class Uploader implements IUpDown {
                 Pipe pipe = remoteService.uploadProject(clientName, projectName, priority, cores, memory, time, null)) {
             int n;
             byte[] buffer = new byte[8192];
+            hasStarted = true;
             while ((n = in.read(buffer)) > 0) {
                 pipe.write(buffer, 0, n);
                 bytesReaded = bytesReaded + n;
@@ -92,17 +98,22 @@ public class Uploader implements IUpDown {
     }
 
     @Override
-    public int getProgress() {
-        return this.uploadProgress;
+    public synchronized int getProgress() {
+        return uploadProgress;
     }
 
     @Override
-    public boolean isCompleted() {
+    public boolean hasStarted() {
+        return hasStarted;
+
+    }
+
+    @Override
+    public boolean hasCompleted() {
         if (!tmp.exists()) {
             return false;
         } else {
             return bytesReaded == tmp.length();
         }
-
     }
 }

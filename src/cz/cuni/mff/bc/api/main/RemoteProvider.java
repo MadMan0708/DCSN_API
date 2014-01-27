@@ -16,10 +16,12 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+import java.util.logging.Logger;
 
 /**
- * Provides basic methods from server. Using these methods requires own
- * RemoteException handling and logging if needed
+ * Provides basic remote methods from the server. Using these methods requires
+ * own RemoteException handling and logging implementation if needed
  *
  * @author Jakub Hava
  */
@@ -34,6 +36,7 @@ public class RemoteProvider {
     private Path temporaryDir;
 
     /**
+     * Constructor
      *
      * @param remoteService remote interface
      * @param clientName client name
@@ -52,6 +55,7 @@ public class RemoteProvider {
     }
 
     /**
+     * Constructor
      *
      * @param remoteService remote interface
      * @param clientName client name
@@ -64,50 +68,55 @@ public class RemoteProvider {
     }
 
     /**
+     * Gets the client's name
      *
-     * @return client name
+     * @return client's name
      */
     public String getClientName() {
         return clientName;
     }
 
     /**
+     * Gets the path to the temporary directory which has been set in console
      *
-     * @return temporary directory which has been set in console
+     * @return path to the temporary directory
      */
     public Path getStandartTemporaryDir() {
         return temporaryDir;
     }
 
     /**
+     * Gets the path to the download directory which has been set in console
      *
-     * @return download directory which has been set in console
+     * @return path to the download directory
      */
     public Path getStandartDownloadDir() {
         return downloadDir;
     }
 
     /**
+     * Gets the path to the upload directory which has been set in console
      *
-     * @return upload directory which has been set in console
+     * @return path to the upload directory
      */
     public Path getStandartUploadDir() {
         return uploadDir;
     }
 
     /**
+     * Gets the path to the current project jar
      *
-     * @return path to project jar
+     * @return path to current project jar
      */
     public Path getCurrentJarPath() {
         return currentJar;
     }
 
     /**
-     * Sends to server information about memory limit which can tasks use during
-     * computation
+     * Sends to the server information about amount of memory which can be used
+     * during task computation
      *
-     * @param memory
+     * @param memory memory limit
      * @throws RemoteException
      */
     public void setMemoryLimit(int memory) throws RemoteException {
@@ -115,10 +124,10 @@ public class RemoteProvider {
     }
 
     /**
-     * Sends to server information about number of cores which can be used to
-     * task computation
+     * Sends to server information about number of cores which can be used
+     * during task computation
      *
-     * @param cores
+     * @param cores cores limit
      * @throws RemoteException
      */
     public void setCoresLimit(int cores) throws RemoteException {
@@ -126,9 +135,10 @@ public class RemoteProvider {
     }
 
     /**
+     * Checks if the project is ready for download
      *
      * @param projectName project name
-     * @return true if project is ready for download, false otherwise
+     * @return true if the project is ready for download, false otherwise
      * @throws RemoteException
      */
     public boolean isProjectReadyForDownload(String projectName) throws RemoteException {
@@ -142,7 +152,7 @@ public class RemoteProvider {
     /**
      * Checks if the client is connected
      *
-     * @return true if client is connected, false otherwise
+     * @return true if the client is connected, false otherwise
      */
     public boolean isConnected() {
         try {
@@ -153,9 +163,9 @@ public class RemoteProvider {
     }
 
     /**
-     * Checks if the client has tasks in progress
+     * Checks if the client has some tasks in progress
      *
-     * @return true if client has tasks in progress, false otherwise
+     * @return true if client has some tasks in progress, false otherwise
      * @throws RemoteException
      */
     public boolean hasClientTasksInProgress() throws RemoteException {
@@ -167,9 +177,10 @@ public class RemoteProvider {
     }
 
     /**
+     * Checks if the project exists
      *
      * @param projectName project name
-     * @return true if project exists, false otherwise
+     * @return true if the project exists, false otherwise
      * @throws RemoteException
      */
     public boolean isProjectExists(String projectName) throws RemoteException {
@@ -182,9 +193,10 @@ public class RemoteProvider {
     }
 
     /**
+     * Downloads the project
      *
      * @param projectName project name
-     * @param target path, where the project will be downloaded
+     * @param target path where the project will be downloaded
      * @return ProgressChecker - object used to get information about
      * downloading status
      * @throws RemoteException
@@ -200,6 +212,7 @@ public class RemoteProvider {
     }
 
     /**
+     * Uploads the project
      *
      * @param projectJar path to project jar
      * @param projectData path to project data
@@ -215,7 +228,6 @@ public class RemoteProvider {
             int cores = Integer.parseInt(JarTools.getAttributeFromManifest(projectJar, "Cores-Per-Task"));
             int memory = Integer.parseInt(JarTools.getAttributeFromManifest(projectJar, "Memory-Per-Task"));
             int time = Integer.parseInt(JarTools.getAttributeFromManifest(projectJar, "Time-Per-Task"));
-
             if (!isProjectExists(projectName)) {
                 IUpDown uploader = new Uploader(remoteService, projectJar, projectData, temporaryDir, clientName, projectName, priority, cores, memory, time);
                 Future<?> f = executor.submit(uploader);
@@ -229,21 +241,19 @@ public class RemoteProvider {
     }
 
     /**
+     * Cancels the project
      *
      * @param projectName project name
-     * @return true if the project has been cancelled, false if the project
-     * doesn't exist
+     * @return true if project has been successfully cancelled, false if the
+     * project is in preparing phase or null if the project doesn't exist
      * @throws RemoteException
      */
-    public boolean cancelProject(String projectName) throws RemoteException {
-        if (remoteService.cancelProject(clientName, projectName)) {
-            return true;
-        } else {
-            return false;
-        }
+    public Boolean cancelProject(String projectName) throws RemoteException {
+        return remoteService.cancelProject(clientName, projectName);
     }
 
     /**
+     * Pauses the project
      *
      * @param projectName project name
      * @return Null if the project doesn't exist on the server or project state
@@ -257,6 +267,7 @@ public class RemoteProvider {
     }
 
     /**
+     * Resumes the project
      *
      * @param projectName project name
      * @return Null if the project doesn't exist on the server or project state
@@ -280,8 +291,9 @@ public class RemoteProvider {
     }
 
     /**
+     * Gets list of all client's projects
      *
-     * @return list of all client's projects
+     * @return list of projects
      * @throws RemoteException
      */
     public ArrayList<ProjectInfo> getProjectList() throws RemoteException {
@@ -289,9 +301,10 @@ public class RemoteProvider {
     }
 
     /**
+     * Gets list of client's projects in given state
      *
-     * @param state project state to filter project list
-     * @return list of client's project with given state
+     * @param state project state to filter the project list
+     * @return list of projects
      * @throws RemoteException
      */
     public ArrayList<ProjectInfo> getProjectList(ProjectState state) throws RemoteException {
