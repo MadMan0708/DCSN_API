@@ -285,7 +285,7 @@ public class StandardRemoteProvider {
                 LOG.log(Level.INFO, "Project {0} was successfuly canceled", projectName);
                 return true;
             } else if (canceled == false) {
-                LOG.log(Level.INFO, "Project {0} can be canceled during preparation on the server", projectName);
+                LOG.log(Level.INFO, "Project {0} can not be canceled during preparation on the server", projectName);
                 return false;
             } else {
                 LOG.log(Level.INFO, "No such project: {0}", projectName);
