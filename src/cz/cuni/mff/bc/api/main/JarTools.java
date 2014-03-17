@@ -210,12 +210,8 @@ public class JarTools {
      * @throws IOException
      */
     public static boolean checkProjectParams(Path projectJar) throws IllegalArgumentException, IOException {
-        if (isProjectTimeValid(projectJar) && isProjectCoresValid(projectJar) && isProjectMemoryValid(projectJar)
-                && isProjectPriorityValid(projectJar) && isProjectTimeValid(projectJar) && isProjectCompClassValid(projectJar)) {
-            return true;
-        } else {
-            return false;
-        }
+        return isProjectTimeValid(projectJar) && isProjectCoresValid(projectJar) && isProjectMemoryValid(projectJar)
+                && isProjectPriorityValid(projectJar) && isProjectTimeValid(projectJar) && isProjectCompClassValid(projectJar);
     }
 
     /**

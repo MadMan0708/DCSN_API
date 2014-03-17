@@ -9,13 +9,9 @@ import cz.cuni.mff.bc.api.main.IServer;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.logging.Logger;
 import org.cojen.dirmi.Pipe;
 
 /**
@@ -26,18 +22,18 @@ import org.cojen.dirmi.Pipe;
 public class Uploader implements IUpDown {
 
     private boolean hasStarted = false;
-    private IServer remoteService;
-    private Path projectJar;
-    private Path projectData;
-    private Path temporaryDir;
+    private final IServer remoteService;
+    private final Path projectJar;
+    private final Path projectData;
+    private final Path temporaryDir;
     private int uploadProgress;
     private long bytesReaded;
-    private String clientName;
-    private String projectName;
-    private int priority;
-    private int cores;
-    private int memory;
-    private int time;
+    private final String clientName;
+    private final String projectName;
+    private final int priority;
+    private final int cores;
+    private final int memory;
+    private final int time;
     private File tmp;
 
     /**

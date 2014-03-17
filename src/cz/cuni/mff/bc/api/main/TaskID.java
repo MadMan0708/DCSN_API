@@ -17,10 +17,10 @@ public class TaskID implements Serializable {
     private int cores;
     private int memory;
     private int time;
-    private int priority;
-    private String projectName;
-    private String clientName;
-    private String taskName;
+    private final int priority;
+    private final String projectName;
+    private final String clientName;
+    private final String taskName;
 
     /**
      * Constructor

@@ -443,9 +443,7 @@ public class StandardRemoteProvider {
             }
         } catch (RemoteException e) {
             LOG.log(Level.WARNING, "Problem with the network during uploading: {0}", e.getMessage());
-        } catch (IllegalArgumentException e) {
-            LOG.log(Level.WARNING, "{0}", e.getMessage());
-        } catch (IOException e) {
+        } catch (IllegalArgumentException | IOException e) {
             LOG.log(Level.WARNING, "{0}", e.getMessage());
         }
     }

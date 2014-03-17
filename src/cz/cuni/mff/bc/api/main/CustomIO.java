@@ -65,11 +65,7 @@ public class CustomIO {
      * @return true if file exists, otherwise false
      */
     public static boolean isFileExist(Path file, String extension) {
-        if (file.toFile().isFile() && getExtension(file.toFile()).equals(extension)) {
-            return true;
-        } else {
-            return false;
-        }
+        return file.toFile().isFile() && getExtension(file.toFile()).equals(extension);
     }
 
     /**

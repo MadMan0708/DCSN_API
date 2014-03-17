@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.logging.Logger;
 
 /**
  * Class used to check the progress of any class which implements IUpDown
@@ -18,8 +17,8 @@ import java.util.logging.Logger;
  */
 public class ProgressChecker {
 
-    private Future<?> future;
-    private IUpDown upDown;
+    private final Future<?> future;
+    private final IUpDown upDown;
 
     /**
      * Constructor
@@ -39,11 +38,7 @@ public class ProgressChecker {
      * otherwise
      */
     public boolean isInProgress() {
-        if (!future.isDone()) {
-            return true;
-        } else {
-            return false;
-        }
+        return !future.isDone(); 
     }
 
     /**

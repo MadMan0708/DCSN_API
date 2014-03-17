@@ -14,15 +14,15 @@ import java.io.Serializable;
  */
 public class ProjectInfo implements Serializable {
 
-    private String projectName;
-    private String clientName;
-    private int numOfCompletedTasks;
-    private int numOfAllTasks;
-    private ProjectState state;
-    private int priority;
-    private int cores;
-    private int memory;
-    private int time;
+    private final String projectName;
+    private final String clientName;
+    private final int numOfCompletedTasks;
+    private final int numOfAllTasks;
+    private final ProjectState state;
+    private final int priority;
+    private final int cores;
+    private final int memory;
+    private final int time;
 
     /**
      * Constructor

@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-import java.util.logging.Logger;
 
 /**
  * Provides basic remote methods from the server. Using these methods requires
@@ -28,7 +26,7 @@ import java.util.logging.Logger;
 public class RemoteProvider {
 
     private IServer remoteService;
-    private ExecutorService executor = Executors.newCachedThreadPool();
+    private final ExecutorService executor = Executors.newCachedThreadPool();
     private String clientName;
     private Path currentJar;
     private Path uploadDir;
@@ -142,11 +140,7 @@ public class RemoteProvider {
      * @throws RemoteException
      */
     public boolean isProjectReadyForDownload(String projectName) throws RemoteException {
-        if (remoteService.isProjectReadyForDownload(clientName, projectName)) {
-            return true;
-        } else {
-            return false;
-        }
+        return remoteService.isProjectReadyForDownload(clientName, projectName);
     }
 
     /**
@@ -169,11 +163,7 @@ public class RemoteProvider {
      * @throws RemoteException
      */
     public boolean hasClientTasksInProgress() throws RemoteException {
-        if (remoteService.hasClientTasksInProgress(clientName)) {
-            return true;
-        } else {
-            return false;
-        }
+        return remoteService.hasClientTasksInProgress(clientName);
     }
 
     /**
@@ -184,12 +174,7 @@ public class RemoteProvider {
      * @throws RemoteException
      */
     public boolean isProjectExists(String projectName) throws RemoteException {
-        if (remoteService.isProjectExists(clientName, projectName)) {
-            return true;
-        } else {
-            return false;
-        }
-
+        return remoteService.isProjectExists(clientName, projectName);
     }
 
     /**

@@ -21,12 +21,12 @@ import org.cojen.dirmi.Pipe;
 public class Downloader implements IUpDown {
 
     private boolean hasStarted = false;
-    private IServer remoteService;
+    private final IServer remoteService;
     private int downloadProgress;
     private long bytesReaded;
-    private String projectName;
-    private String clientName;
-    private File downloadFile;
+    private final String projectName;
+    private final String clientName;
+    private final File downloadFile;
     private long downloadFileLength;
 
     /**

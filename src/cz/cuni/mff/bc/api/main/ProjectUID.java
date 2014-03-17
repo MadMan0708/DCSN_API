@@ -14,8 +14,8 @@ import java.util.Objects;
  */
 public class ProjectUID implements Serializable {
 
-    private String clientName;
-    private String projectName;
+    private final String clientName;
+    private final String projectName;
 
     /**
      * Constructor
